@@ -129,6 +129,36 @@ public class LinkedList {
 						100)));
 	}
 
+	private Node ReverseNodeHelper(Node root) {
+		Node newNode = null;
+		
+		Node prev = null;
+		Node current = root;
+		Node next = current.next;
+		
+		while (current != null) {
+			next = current.next;
+			
+			// swap them
+			current.next = prev;
+
+			// move pointers			
+			prev = current;
+			current = next;
+		}
+		
+		return prev;
+	}
+	
+	@Test
+	public void ReverseNode() {
+		assertArrayEquals("result should equal", new int[]{6,5,4,3,2,1},
+				Helper.toArray(
+						ReverseNodeHelper(
+								Helper.constructListFrom(new int[]
+										{1,2,3,4,5,6}))));
+	}
+	
 	private Node ReverseEveryKNode(Node root, int k) {
 		if (k <= 1) {
 			return root;
@@ -140,19 +170,34 @@ public class LinkedList {
 		while (node != null) {
 			Node prev = node;
 			node = node.next;
-			System.out.println("node " + node.data);
-			for (int i = 0; i < k; ++i) {
-				if (node == null)
-					return null;
-				prev.next = node.next;
-				node.next = prev;
-				node = prev.next;
-			}
-			
 			if (newRoot == null) {
+				System.out.println("new root is @" + node.data);
 				newRoot = node;
+			}			
+			for (int i = 1; i < k; ++i) {
+				if (node.next == null) {
+					System.out.println("end @" + node.data);
+					node.next = prev;
+					prev.next = null;
+					i = 100;
+					break;
+				}
+				else {
+					Node nextNode = node.next;
+					prev.next = nextNode.next;
+					node.next = prev;
+					node = nextNode;
+				}
 			}
 		}
+		
+		if (newRoot == null) {
+			System.out.println("null?!@#");
+		}
+		else {
+			System.out.println("e l s e " + newRoot.data);
+		}
+		
 		Helper.printList(newRoot);
 		return newRoot;
 		 
@@ -168,7 +213,7 @@ public class LinkedList {
 	public void ReverseEveryKNode() {
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 0);
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 1);
-		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 2);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 2);
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 3);
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 4);
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 5);
