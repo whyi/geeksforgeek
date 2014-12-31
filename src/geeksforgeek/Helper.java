@@ -1,7 +1,5 @@
 package geeksforgeek;
 
-import java.util.*;
-
 public final class Helper {
 	public static Node constructListFrom(int[] values) {
 		Node dummy = new Node(0);
@@ -18,7 +16,7 @@ public final class Helper {
 	public static void printList(Node root) {
 		Node node = root;
 		while (node != null) {
-			System.out.print(node.data);
+			System.out.print(node.data + " ");
 			node = node.next;
 		}
 		System.out.println();

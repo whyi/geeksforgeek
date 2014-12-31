@@ -77,5 +77,57 @@ public class LinkedList {
 		
 		assertArrayEquals("result should equal", new int[]{2,4,6,8,10,1,3,5,7,9}, Helper.toArray(newRoot));
 	}
+
+	private static Node DeleteNodesWhichGreaterThan(Node root, int k) {
+		Node node = root;
+		Node prev = null;
+		Node newRoot = null;
+
+		while (node != null) {
+			if (node.data > k) {
+
+				if (prev != null) {
+					prev.next = node.next;
+				}
+				node = node.next;
+			}
+			else {
+				if (newRoot == null) {
+					newRoot = node;
+				}
+				prev = node;
+				node = node.next;
+			}
+		}
+
+		return newRoot;		
+	}
+	
+	@Test
+	public void DeleteNodesWhichGreaterThan() {
+		assertArrayEquals("result should equal", new int[]{4,4,3,1,2,4,3},
+				Helper.toArray(
+						DeleteNodesWhichGreaterThan(
+								Helper.constructListFrom(new int[]
+										{6,54,34,5,35,23,4,23,4,25,3246,5,3,23,1,2,4,3,235,43,64,57,5,74,345,23}),
+						4)));
+		
+		// case when everything got deleted
+		assertArrayEquals("result should equal", new int[]{},
+				Helper.toArray(
+						DeleteNodesWhichGreaterThan(
+								Helper.constructListFrom(new int[]
+										{1,2,3,4,5,6,7}),
+						-10)));
+		
+		// case when everything nothing get deleted
+		assertArrayEquals("result should equal", new int[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+				Helper.toArray(
+						DeleteNodesWhichGreaterThan(
+								Helper.constructListFrom(new int[]
+										{3,3,3,3,3,3,3,3,3,3,3,3,3,3}),
+						100)));
+	}
+	
 	
 }
