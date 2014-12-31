@@ -8,3 +8,24 @@ struct node {
 	node(const T& data) : data(data) {}
 };
 
+template <typename T> node<T>* construct_singly_linked_list_from(std::initializer_list<T> data)
+{
+	// convert to lambda later like
+	// std::for_each(data.begin(), data.end(), [](T data) ->
+	std::static_assert(!data.empty());
+	const node<T> *root = new node<T>(*data.begin());
+
+	auto itr = data.begin();
+	++itr;
+
+	const node<T> *prev = root;
+
+	while(itr != data.end())
+	{
+		const node<T> *node = new node<T>(*itr);
+		prev->next = node;
+		++itr;
+		prev = node;
+	}
+	return root;	
+}
