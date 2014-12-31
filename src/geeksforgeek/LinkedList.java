@@ -219,7 +219,19 @@ public class LinkedList {
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 5);
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 6);
 //		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 7);
-		
 	}
+	
+	@Test
+	public void LinkedListToBST() {
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 0);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 1);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 2);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 3);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 4);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 5);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 6);
+//		ReverseEveryKNodeHelper(new int[]{1,2,3,4,5,6}, new int[]{1,2,3,4,5,6}, 7);
+	}
+	
+	
 }
-

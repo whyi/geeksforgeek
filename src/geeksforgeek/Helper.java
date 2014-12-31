@@ -1,5 +1,7 @@
 package geeksforgeek;
 
+import java.util.*;
+
 public final class Helper {
 	public static Node constructListFrom(int[] values) {
 		Node dummy = new Node(0);
@@ -41,4 +43,91 @@ public final class Helper {
 		}
 		return result;
 	}
+	
+	private static void getPrefixNodes(BSTNode root, ArrayList<BSTNode> nodes) {
+		// preorder while keep pushing it to a container
+		nodes.add(root);
+
+		if (root.left != null) {
+			getPrefixNodes(root.left, nodes);
+		}
+		
+		if (root.right != null) {
+			getPrefixNodes(root.right, nodes);
+		}
+	}
+	
+	// FIXME : more prettify is needed.. too ugly now
+	public static void printInLevelOrder(BSTNode root) {
+		Queue<BSTNode> q = new java.util.LinkedList<BSTNode>();
+
+		int shouldPrintNewLine = 1;
+		int i = 1;
+		q.add(root);
+		
+		ArrayList<BSTNode> nodes = new ArrayList<BSTNode>();
+		getPrefixNodes(root, nodes);
+		int margins = nodes.size()/2;
+		
+		
+		while (!q.isEmpty()) {
+			BSTNode node = q.remove();
+			
+			// don't print margin for the leaves
+			if (margins >= 1) {
+				for (int j = 0; j < margins+2; ++j) {
+					System.out.print(" ");
+				}
+			}
+			System.out.print(node.data + " ");
+			if (node.left != null) {
+				q.add(node.left);
+			}
+			
+			if (node.right != null) {
+				q.add(node.right);
+			}
+
+			if (i == shouldPrintNewLine) {
+				System.out.println();
+				if (margins >= 1) {
+					for (int j = 0; j < margins+1; ++j) {
+						System.out.print(" ");
+					}
+					System.out.println("/ \\");
+				}
+				
+				
+				i = 1;
+				shouldPrintNewLine *= 2;
+				margins /= 2;
+			}
+			else {
+				++i;
+			}
+		}
+	}
+	
+	private static void toArray(BSTNode root, ArrayList<Integer> list) {
+		if (root == null) {
+			return;
+		}
+		toArray(root.left, list);
+		list.add(root.data);
+		toArray(root.right, list);
+	}
+	
+	public static int[] toArray(BSTNode root) {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		toArray(root, list);
+
+		int[] result = new int[list.size()];
+		int count = 0;
+		for (Integer i : list) {
+			result[count] = i.intValue();
+			++count;
+		}
+		return result;
+	}
+
 }
