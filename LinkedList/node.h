@@ -1,3 +1,6 @@
+#include <iostream>
+#include <initializer_list>
+
 template <typename T>
 struct node {
 	T data;
@@ -5,27 +8,40 @@ struct node {
 	node<T> *prev;
 	node<T> *next;
 
-	node(const T& data) : data(data) {}
+	node(const T& data) : data(data), prev(nullptr), next(nullptr) {}
 };
 
 template <typename T> node<T>* construct_singly_linked_list_from(std::initializer_list<T> data)
 {
-	// convert to lambda later like
-	// std::for_each(data.begin(), data.end(), [](T data) ->
-	std::static_assert(!data.empty());
-	const node<T> *root = new node<T>(*data.begin());
+	node<T> *root = new node<T>(*data.begin());
 
 	auto itr = data.begin();
 	++itr;
 
-	const node<T> *prev = root;
+	node<T> *prev = root;
 
 	while(itr != data.end())
 	{
-		const node<T> *node = new node<T>(*itr);
-		prev->next = node;
+		node<T> *current_node = new node<T>(*itr);
+		prev->next = current_node;
 		++itr;
-		prev = node;
+		prev = current_node;
 	}
 	return root;	
+}
+
+template <typename T>
+static void print_nodes(const node<T>* node)
+{
+	while (true)
+	{
+		if (node == nullptr)
+		{
+			break;
+		}
+
+		std::cout << node->data << " ";
+		node = node->next;
+	}
+	std::cout << std::endl;
 }
