@@ -11,6 +11,8 @@ import java.util.Stack;
 
 import org.junit.Test;
 
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
 public class BinarySearchTree {
 
 	private static BSTNode arrayToBSTNaiveHelper(int[] array, int left, int right) {
@@ -415,8 +417,51 @@ public class BinarySearchTree {
 		printNodeBetweenTwoGivenLevelNumbers(root, 3, 4);
 	}
 	
-	private int heightOfBinaryTreeRepresentedByParentArrayHelper(int[] parent) {
-		return 0;
+	private int heightOfBinaryTreeRepresentedByParentArrayOptimized(int[] parents, int currentNode, int[] depthAt) {
+		final int NOT_PRESENT = Integer.MAX_VALUE;
+		if (parents[currentNode] == -1) {
+			return 1;
+		}
+
+		int parentNode = parents[currentNode];
+
+		if (depthAt[parentNode] != NOT_PRESENT) {
+			depthAt[currentNode] = 1+depthAt[parentNode];
+		}
+		else {
+			depthAt[currentNode] = 1+heightOfBinaryTreeRepresentedByParentArrayOptimized(parents, parentNode, depthAt);
+		}
+		return depthAt[currentNode];
+	}
+	
+	// should be able to do this in O(n) by storing shits..
+	// want to do it iteratively.. but no time
+	private int heightOfBinaryTreeRepresentedByParentArrayOptimized(int[] parents) {
+		// if we store the intermediate result somewhere, say array called depthAt.
+		// Then in the loop somewhere we first check if the value is there.
+		//   if it present then just use it. loop completes there
+		//   if it doesn't present then do the usual logic
+
+		final int NOT_PRESENT = Integer.MAX_VALUE;
+		
+		int[] depthAt = new int[parents.length];
+		for (int i = 0; i < depthAt.length; ++i) {
+			depthAt[i] = NOT_PRESENT;
+		}
+
+		int maxHeightSoFar = 1;
+		
+		for (int i = 0; i < parents.length; ++i) {
+			int currentNode = i;
+
+			if (depthAt[currentNode] != NOT_PRESENT) {
+				maxHeightSoFar = Math.max(depthAt[i], maxHeightSoFar);
+			}
+			else {
+				heightOfBinaryTreeRepresentedByParentArrayOptimized(parents, currentNode, depthAt);
+			}
+		}
+		return maxHeightSoFar;
 	}
 
 	// naive (I did) O(n^2) maybe?? because
@@ -454,5 +499,6 @@ public class BinarySearchTree {
 	public void heightOfBinaryTreeRepresentedByParentArray() {
 		int[] parent = {1,5,5,2,2,-1,3};
 		assertEquals(4, heightOfBinaryTreeRepresentedByParentArray(parent));
+		assertEquals(4, heightOfBinaryTreeRepresentedByParentArrayOptimized(parent));
 	}
 }
