@@ -414,4 +414,45 @@ public class BinarySearchTree {
 		printNodeBetweenTwoGivenLevelNumbers(root, 2, 3);
 		printNodeBetweenTwoGivenLevelNumbers(root, 3, 4);
 	}
+	
+	private int heightOfBinaryTreeRepresentedByParentArrayHelper(int[] parent) {
+		return 0;
+	}
+
+	// naive (I did) O(n^2) maybe?? because
+	// 1. for each node traverse upward to the root while checking the height
+	// 2. wait.. maybe O(nlogn) as in the worst case.... hmm, NVM it's still n^2 because
+	//    imagine a completely skewed tree (i.e only left dangling nodes)
+	// 3. then it's O(n^2) as I check for each node move upwards till hit the root
+	// 4. If there was a guarantee that it's a complete (or full, whatever) binary tree then maybe O(nlogn)
+	// the next step is to optimize this.
+	private int heightOfBinaryTreeRepresentedByParentArray(int[] parent) {
+
+		int maxHeightSoFar = 1;
+
+		for (int i = 0; i < parent.length; ++i) {
+			int currentHeight = 1;
+			int currentNode = i;
+
+			while (true) {
+				int parentNode = parent[currentNode];
+
+				if (parentNode == -1) {
+					maxHeightSoFar = Math.max(currentHeight, maxHeightSoFar);
+					break;
+				}
+				else {
+					currentNode = parentNode;
+					++currentHeight;
+				}
+			}
+		}
+		return maxHeightSoFar;
+	}
+	
+	@Test
+	public void heightOfBinaryTreeRepresentedByParentArray() {
+		int[] parent = {1,5,5,2,2,-1,3};
+		assertEquals(4, heightOfBinaryTreeRepresentedByParentArray(parent));
+	}
 }
