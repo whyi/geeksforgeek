@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -319,5 +320,98 @@ public class BinarySearchTree {
 		assertEquals(3, locateLowestCommonAncestor(root, 1, 3).data); // expects 6
 		assertEquals(8, locateLowestCommonAncestor(root, 7, 8).data); // expects 8
 		assertEquals(9, locateLowestCommonAncestor(root, 7, 10).data); // expects 9
+	}
+	
+	private boolean isLeaf(BSTNode root, int k) {
+		if (root.data < k) {
+			return isLeaf(root.right, k);
+		}
+		
+		if (root.data > k) {
+			return isLeaf(root.left, k);
+		}
+		
+		if (root.data == k) {
+			if (root.left == null && root.right == null) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	private int findTheClosestLeafInBinaryTree(BSTNode root, int k) {
+		if (isLeaf(root, k)) {
+			return k;
+		}
+		
+		
+		
+		return 0;
+	}
+	
+	// $$$FIXME : incomplete, I read through but didn't finish in time
+	@Test
+	public void findTheClosestLeafInABinaryTree() {
+		BSTNode root = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		
+		Helper.printInLevelOrder(root);
+		
+		assertEquals(1, findTheClosestLeafInBinaryTree(root, 1));
+//		assertEquals(0, findTheClosestLeafInBinaryTree(root, 2));
+//		assertEquals(0, findTheClosestLeafInBinaryTree(root, 3));
+		assertEquals(4, findTheClosestLeafInBinaryTree(root, 4));
+//		assertEquals(0, findTheClosestLeafInBinaryTree(root, 5));
+//		assertEquals(0, findTheClosestLeafInBinaryTree(root, 6));
+		assertEquals(7, findTheClosestLeafInBinaryTree(root, 7));
+//		assertEquals(0, findTheClosestLeafInBinaryTree(root, 8));
+//		assertEquals(0, findTheClosestLeafInBinaryTree(root, 9));
+//		assertEquals(0, findTheClosestLeafInBinaryTree(root, 10));
+	}
+	
+	private void printNodeBetweenTwoGivenLevelNumbers(BSTNode root, int low, int high) {
+		Queue<BSTNode> queue = new LinkedList<BSTNode>();
+		queue.add(root);
+		queue.add(null);
+
+		int level = 1;
+		
+		while (!queue.isEmpty()) {
+			BSTNode node = queue.remove();
+
+			if (node == null) {
+				System.out.println();
+				++level;
+				
+				if (queue.isEmpty() || level > high) {
+					break;
+				}
+				
+				queue.add(null);
+				continue;
+			}
+			
+			if (level >= low) {
+				System.out.print(node.data + " ");
+			}
+			
+			if (node.left != null) {
+				queue.add(node.left);
+			}
+			if (node.right != null) {
+				queue.add(node.right);
+			}
+		}
+	}
+	
+	@Test
+	// O(n). Naive would've taken O(n^2)
+	public void printNodesBetweenTwoGivenLevelNumbers() {
+		System.out.println("printNodesBetweenTwoGivenLevelNumbers");
+		BSTNode root = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		printNodeBetweenTwoGivenLevelNumbers(root, 2, 3);
+		printNodeBetweenTwoGivenLevelNumbers(root, 3, 4);
 	}
 }

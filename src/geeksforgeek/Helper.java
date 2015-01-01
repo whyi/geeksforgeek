@@ -68,14 +68,13 @@ public final class Helper {
 		ArrayList<BSTNode> nodes = new ArrayList<BSTNode>();
 		getPrefixNodes(root, nodes);
 		int margins = nodes.size()/2;
-		
-		
+				
 		while (!q.isEmpty()) {
 			BSTNode node = q.remove();
 			
 			// don't print margin for the leaves
 			if (margins >= 1) {
-				for (int j = 0; j < margins+2; ++j) {
+				for (int j = 0; j < margins+margins/2; ++j) {
 					System.out.print(" ");
 				}
 			}
@@ -91,12 +90,22 @@ public final class Helper {
 			if (i == shouldPrintNewLine) {
 				System.out.println();
 				if (margins >= 1) {
-					for (int j = 0; j < margins+1; ++j) {
+					for (int j = 0; j < margins; ++j) {
 						System.out.print(" ");
 					}
-					System.out.println("/ \\");
+					
+					for (int j = 0; j < shouldPrintNewLine; ++j) {
+						System.out.print("/");
+						for (int k = 0; k < margins/2+1; ++k) {
+							System.out.print(" ");
+						}
+						System.out.print("\\");
+						for (int k = 0; k < margins/2+1; ++k) {
+							System.out.print(" ");
+						}						
+					}
+					System.out.println();
 				}
-				
 				
 				i = 1;
 				shouldPrintNewLine *= 2;

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class LinkedList {
+public class LList {
 
 	@Test
 	public void SegregateEvenOddNodesNaive() {
