@@ -359,7 +359,7 @@ public class BinarySearchTree {
 	public void findTheClosestLeafInABinaryTree() {
 		BSTNode root = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
 		
-		Helper.printInLevelOrder(root);
+		//Helper.printInLevelOrder(root);
 		
 		assertEquals(1, findTheClosestLeafInBinaryTree(root, 1));
 //		assertEquals(0, findTheClosestLeafInBinaryTree(root, 2));
@@ -441,7 +441,6 @@ public class BinarySearchTree {
 		// Then in the loop somewhere we first check if the value is there.
 		//   if it present then just use it. loop completes there
 		//   if it doesn't present then do the usual logic
-
 		final int NOT_PRESENT = Integer.MAX_VALUE;
 		
 		int[] depthAt = new int[parents.length];
@@ -499,6 +498,74 @@ public class BinarySearchTree {
 	public void heightOfBinaryTreeRepresentedByParentArray() {
 		int[] parent = {1,5,5,2,2,-1,3};
 		assertEquals(4, heightOfBinaryTreeRepresentedByParentArray(parent));
-		assertEquals(4, heightOfBinaryTreeRepresentedByParentArrayOptimized(parent));
+		//assertEquals(4, heightOfBinaryTreeRepresentedByParentArrayOptimized(parent));
+	}
+	
+	private void preOrderTraversal(BSTNode node, ArrayList<Integer> list) {
+		list.add(node.data);
+		
+		if (node.left != null) {
+			preOrderTraversal(node.left, list);
+		}
+		
+		if (node.right != null) {
+			preOrderTraversal(node.right, list);
+		}
+	}
+
+	private void inOrderTraversal(BSTNode node, ArrayList<Integer> list) {
+		if (node.left != null) {
+			inOrderTraversal(node.left, list);
+		}
+		
+		list.add(node.data);
+		
+		if (node.right != null) {
+			inOrderTraversal(node.right, list);
+		}
+	}
+	
+	private void postOrderTraversal(BSTNode node, ArrayList<Integer> list) {
+		if (node.left != null) {
+			postOrderTraversal(node.left, list);
+		}
+		
+		if (node.right != null) {
+			postOrderTraversal(node.right, list);
+		}
+		list.add(node.data);
+	}	
+	
+	@Test
+	public void traversal() {
+		BSTNode root = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		preOrderTraversal(root, list);
+		ArrayList<Integer> expectedPreOrder = new ArrayList<Integer>(
+				Arrays.asList(new Integer[]{6,3,2,1,5,4,9,8,7,10}));
+		assertEquals(expectedPreOrder, list);
+		
+		list.clear();
+		inOrderTraversal(root, list);
+		ArrayList<Integer> expectedInOrder = new ArrayList<Integer>(
+				Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
+		assertEquals(expectedInOrder, list);
+		
+		list.clear();
+		postOrderTraversal(root, list);
+		ArrayList<Integer> expectedPostOrder = new ArrayList<Integer>(
+				Arrays.asList(new Integer[]{1,2,4,5,3,7,8,10,9,6}));
+		assertEquals(expectedPostOrder, list);
+		
+		/*              6
+		 *           /    \
+		 *          3      9
+		 *         / \    / \
+		 *        2   5  8  10
+		 *       /   /  /
+		 *      1   4  7
+		 */
+		// not gonna do inorder I have it somewhere already
+		
 	}
 }
