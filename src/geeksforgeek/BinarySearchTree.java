@@ -566,6 +566,173 @@ public class BinarySearchTree {
 		 *      1   4  7
 		 */
 		// not gonna do inorder I have it somewhere already
+	}
+
+	private int calculateSizeOfTree(BSTNode node) {
+		if (node == null) {
+			return 0;
+		}
+		return calculateSizeOfTree(node.left) + calculateSizeOfTree(node.right) + 1;
+	}
+	
+	@Test
+	public void sizeOfTree() {
+		for (int i = 1; i < 10; ++i) {
+			int[] nodes = new int[i];
+			for (int j = 0; j < i; ++j) {
+				nodes[j] = j;
+				assertEquals(i, calculateSizeOfTree(arrayToBSTOptimized(nodes)));
+			}
+		}
+	}
+	
+	private boolean isIdentical(BSTNode node1, BSTNode node2) {
+		if (node1 == null && node2 == null) {
+			return true;
+		}
 		
+		if (node1 != null && node2 != null) {
+			return (node1.data == node2.data) && isIdentical(node1.left, node2.left) && isIdentical(node1.right, node2.right);
+		}
+		
+		return false;
+	}
+	
+	@Test
+	public void isIdentical() {
+		BSTNode root1 = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		BSTNode root2 = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		BSTNode root3 = arrayToBSTOptimized(new int[] {1,2,3});
+		BSTNode root4 = arrayToBSTOptimized(new int[] {});
+		assertEquals(true, isIdentical(root1,root2));
+		assertEquals(true, isIdentical(root2,root1));
+		assertEquals(false, isIdentical(root1,root3));
+		assertEquals(true, isIdentical(root4,root4));
+	}
+	
+	private boolean sumProperty(BSTNode node) {
+		if (node == null || (node.left == null && node.right == null)) {
+			return true;
+		}
+
+		int leftData = 0;
+		if (node.left != null) {
+			leftData = node.left.data;
+		}
+		int rightData = 0;
+		if (node.right != null) {
+			rightData = node.right.data;
+		}		
+		final boolean currentSumProperty = (node.data == leftData + rightData);
+		return currentSumProperty && sumProperty(node.left) && sumProperty(node.right);
+	}
+	
+	@Test
+	public void sumProperty() {
+		BSTNode root1 = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		BSTNode root2 = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		BSTNode root3 = arrayToBSTOptimized(new int[] {1,2,3});
+		BSTNode root4 = arrayToBSTOptimized(new int[] {});		
+		assertEquals(false, sumProperty(root1));
+		assertEquals(false, sumProperty(root2));
+		assertEquals(false, sumProperty(root3));
+		assertEquals(true, sumProperty(root4));
+		
+		// now create the real one by hand.
+		BSTNode root5 = new BSTNode(10);
+		root5.left = new BSTNode(8);
+		root5.left.left = new BSTNode(3);
+		root5.left.right = new BSTNode(5);
+		root5.right = new BSTNode(2);
+		root5.right.left = new BSTNode(2);
+		assertEquals(true, sumProperty(root5));
+		// YAY
+	}
+	
+	
+	// O(n)
+	private void printGivenLevel(BSTNode root, int level, boolean leftToRight) {
+		if (root == null) {
+			return;
+		}
+		
+		if (level == 1) {
+			System.out.print(root.data + " ");
+		}
+		else if (level > 1) {
+			if (leftToRight) {
+				printGivenLevel(root.left, level-1, leftToRight);
+				printGivenLevel(root.right, level-1, leftToRight);
+			}
+			else {
+				printGivenLevel(root.right, level-1, leftToRight);
+				printGivenLevel(root.left, level-1, leftToRight);
+			}
+		}
+	}
+	
+	@Test
+	public void spiralForm() {
+	/*
+	 *              1
+	 *            2   3
+	 *          7 6  5 4
+	 *          
+	 *          expects 1 2 3 4 5 6 7
+	 */
+		
+		// first manually create the input tree
+		BSTNode root = new BSTNode(1);
+		root.left = new BSTNode(2);
+		root.left.left = new BSTNode(7);
+		root.left.right = new BSTNode(6);
+		root.right = new BSTNode(3);
+		root.right.left = new BSTNode(5);
+		root.right.right = new BSTNode(4);
+		//System.out.println("Spiral Form " + spiralForm(root));
+		final int height = heightOfBST(root);
+		boolean leftToRight = true;
+		System.out.println();
+		System.out.println("printGivenLevel ");
+		for (int i = 0; i <= height; ++i) {
+			printGivenLevel(root, i, leftToRight);
+			leftToRight = !leftToRight;
+		}
+	}
+	
+	static BSTNode prev = null;
+	
+	private boolean efficientAndCorrectIsBST(BSTNode node) {
+		if (node != null) {
+			if (!efficientAndCorrectIsBST(node.left)) {
+				return false;
+			}
+			
+			if (prev != null && node.data <= prev.data) {
+				return false;
+			}
+			prev = node;
+			
+			return efficientAndCorrectIsBST(node.right);
+		}
+		return true;
+	}
+	
+	@Test
+	public void isBST() {
+		BSTNode root = new BSTNode(1);
+		root.left = new BSTNode(2);
+		root.left.left = new BSTNode(7);
+		root.left.right = new BSTNode(6);
+		root.right = new BSTNode(3);
+		root.right.left = new BSTNode(5);
+		root.right.right = new BSTNode(4);
+		prev = null;
+		assertEquals(false, efficientAndCorrectIsBST(root));
+		
+		prev = null;
+		BSTNode root2 = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
+		assertEquals(true, efficientAndCorrectIsBST(root2));
+
 	}
 }
