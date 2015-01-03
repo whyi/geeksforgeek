@@ -361,6 +361,33 @@ public class Array {
 			}
 		}
 		
-		assertEquals(198, maxDiff);
+		assertEquals(98, maxDiff);
+	}
+	
+	// naive version O(n)
+	// {0,1,5,7,8} -> expect 2
+	private int findSmallestMissingInteger(int[] arr, int length, int range) {
+		if (arr[0] != 0) {
+			return 0;
+		}
+		
+		for (int i = 1; i < length; ++i) {
+			if (arr[i] != i) {
+				return i;
+			}
+		}
+		// if not found then the last+1 is the answer
+		return length;
+	}
+	
+	// TODO : implement the log(n) version... the kickass version
+
+	@Test
+	public void findSmallestMissingInteger() {
+		assertEquals(2, findSmallestMissingInteger(new int[]{0,1,5,7,8}, 5, 7));
+		assertEquals(3, findSmallestMissingInteger(new int[]{0,1,2,6,9}, 5, 7));
+		assertEquals(0, findSmallestMissingInteger(new int[]{4,5,10,11}, 4, 12));
+		assertEquals(4, findSmallestMissingInteger(new int[]{0,1,2,3}, 4, 5));
+		assertEquals(8, findSmallestMissingInteger(new int[]{0,1,2,3,4,5,6,7,10}, 9, 10));
 	}
 }
