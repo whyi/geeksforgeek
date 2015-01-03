@@ -390,4 +390,51 @@ public class Array {
 		assertEquals(4, findSmallestMissingInteger(new int[]{0,1,2,3}, 4, 5));
 		assertEquals(8, findSmallestMissingInteger(new int[]{0,1,2,3,4,5,6,7,10}, 9, 10));
 	}
+	
+	private void rearrangePositiveAndNegativeNumbers(ArrayList<Integer> arr) {
+		// quicksort partitioning kicked in yo!
+		
+		final int pivot = 0;
+		final int n = arr.size();
+		int runner = 0;
+		for (int i = 0; i < n; ++i) {
+			final int currentValue = arr.get(i);
+			if (currentValue < pivot) {
+				Collections.swap(arr, i, runner);
+				++runner;
+			}
+		}
+		
+		// now runner is @ the start of positive.
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		
+		int j = runner;
+		
+		for (int i = 0; i < runner; ++i) {
+			// 2 cases can happen.
+			// 1. i runs out (fewer negatives) <= never happen as we loop till runner only
+			// 2. j runs out (fewer positives)
+			result.add(arr.get(i));
+			
+			if (j < n) {
+				result.add(arr.get(j));
+			}
+			++j;
+		}
+		
+		// FXIME : check for the leftovers
+		//         just append'em all to the end...
+//		if (j < n-1) {
+//			for (int i = j; j < n-1; ++i) {
+//				result.add(arr.get(i));
+//			}
+//		}
+		System.out.println(result);
+	}
+	
+	@Test
+	public void rearrangePositiveAndNegativeNumbers() {
+		rearrangePositiveAndNegativeNumbers(new ArrayList<Integer>(Arrays.asList(new Integer[]{-1,2,-3,4,5,6,-7,-8,9})));
+		rearrangePositiveAndNegativeNumbers(new ArrayList<Integer>(Arrays.asList(new Integer[]{-1,2,-3,4,5,6,-7,-8,9,10,11,12})));
+	}
 }
