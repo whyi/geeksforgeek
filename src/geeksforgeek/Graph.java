@@ -526,10 +526,42 @@ public class Graph {
 		
 		System.out.println();
 	}
+
+	public boolean isTree() {
+		HashMap<Vertex, Boolean> visited = new HashMap<Vertex, Boolean>();
+		
+		boolean hasCycle = false;
+		for (Vertex vertex: vertices) {
+			if (!visited.containsKey(vertex)) {
+				if (isCyclic(vertex, visited, null) == true) {
+					//System.out.println("cyclic @ " + vertex.data);
+					hasCycle = true;
+					break;
+				}
+			}
+		}
+		
+		boolean isAllVisited = true;
+		// see if all vertices are visited
+		for (Vertex vertex: vertices) {
+			if (!visited.containsKey(vertex)) {
+				isAllVisited = false;
+			}
+		}
+		
+		//System.out.println("hasCycle : " +  hasCycle + " visited " + isAllVisited);
+		
+		boolean isTree = !hasCycle && isAllVisited;
+		return isTree;
+	}
 	
 	@Test
 	public void isTreeOrNot() {
 		constructedUndirectedGraphWithCycles();
-		assertEquals(true, isCyclic());
+		assertEquals(false, isTree());
+		
+		//constructGraphWithoutCycle();
+		//assertEquals(true, isTree());		
+		
 	}
 }
