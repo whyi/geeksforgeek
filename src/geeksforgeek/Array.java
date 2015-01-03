@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Stack;
 
 import org.junit.Test;
@@ -390,7 +392,7 @@ public class Array {
 		assertEquals(4, findSmallestMissingInteger(new int[]{0,1,2,3}, 4, 5));
 		assertEquals(8, findSmallestMissingInteger(new int[]{0,1,2,3,4,5,6,7,10}, 9, 10));
 	}
-	
+
 	// O(n)
 	private void rearrangePositiveAndNegativeNumbers(ArrayList<Integer> arr) {
 		// quicksort partitioning kicked in yo!
@@ -438,4 +440,93 @@ public class Array {
 		rearrangePositiveAndNegativeNumbers(new ArrayList<Integer>(Arrays.asList(new Integer[]{-1,2,-3,4,5,6,-7,-8,9})));
 		rearrangePositiveAndNegativeNumbers(new ArrayList<Integer>(Arrays.asList(new Integer[]{-1,2,-3,4,5,6,-7,-8,9,10,11,12})));
 	}
+
+	public static class RevampedBSTNode {
+		public int data;
+		public int count;
+		public RevampedBSTNode left;
+		public RevampedBSTNode right;
+		public RevampedBSTNode(int data) {
+			this.data = data;
+			count = 1;
+		}
+	}
+	
+	private void addToBST(RevampedBSTNode root, int n) {
+		if (root.data == n) {
+			++root.count;
+		}
+		else {
+			if (root.data > n) {
+				if (root.left != null) {
+					addToBST(root.left, n);
+				}
+				if (root.left == null) {
+					root.left = new RevampedBSTNode(n);
+				}
+			}
+			if (root.data < n) {
+				if (root.right != null) {
+					addToBST(root.right, n);
+				}
+				if (root.right == null) {
+					root.right = new RevampedBSTNode(n);
+				}
+			}
+		}
+	}
+	
+	public static class Frequency implements Comparable<Frequency> {
+		public int value;
+		public int frequency;
+
+		@Override
+		public int compareTo(Frequency other) {
+			return Integer.compare(other.frequency, frequency);
+		}
+	}
+	
+	private void convertToArray(RevampedBSTNode node, ArrayList<Frequency> list) {
+		if (node == null) {
+			return;
+		}
+
+		convertToArray(node.left, list);
+		Frequency frequency = new Frequency();
+		frequency.value = node.data;
+		frequency.frequency = node.count;
+		list.add(frequency);
+		convertToArray(node.right, list);
+	}
+	
+	// O(nlogn) because of BST and sorting
+	private int[]sortElementsByFrequency(ArrayList<Integer> arr) {
+		RevampedBSTNode root = new RevampedBSTNode(arr.get(0));
+		
+		for (int i = 1; i < arr.size(); ++i) {
+			addToBST(root, arr.get(i));
+		}
+		
+		ArrayList<Frequency> frequencies = new ArrayList<Frequency>();
+		convertToArray(root, frequencies);
+		Collections.sort(frequencies);
+		
+		int[] result = new int[arr.size()];
+		int count = 0;
+		for (Frequency fq : frequencies) {
+			for (int i = 0; i < fq.frequency; ++i) {
+				result[count] = fq.value;
+				++count;
+			}
+		}
+
+		return result;
+	}
+	
+	@Test
+	public void sortElementsByFrequency() {
+		assertArrayEquals(new int[] {3,3,3,3,3,3,3,53,53,53,53,53,53,2,2,2,2,2,1,1,1,5,5,5,4,4,6,6,64,64,7,8},
+				sortElementsByFrequency(new ArrayList<Integer>(Arrays.asList(new Integer[]{1,1,1,2,3,5,3,2,6,3,4,2,3,3,5,6,7,8,5,4,2,64,64,3,2,3,53,53,53,53,53,53})))
+		);
+	}	
 }
