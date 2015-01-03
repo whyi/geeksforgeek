@@ -391,6 +391,7 @@ public class Array {
 		assertEquals(8, findSmallestMissingInteger(new int[]{0,1,2,3,4,5,6,7,10}, 9, 10));
 	}
 	
+	// O(n)
 	private void rearrangePositiveAndNegativeNumbers(ArrayList<Integer> arr) {
 		// quicksort partitioning kicked in yo!
 		
