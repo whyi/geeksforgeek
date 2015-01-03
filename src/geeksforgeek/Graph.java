@@ -323,10 +323,22 @@ public class Graph {
 		addEdge(2,0);
 	}
 	
-	private void constructedUndirectedGraph() {
+	private void constructedUndirectedGraphWithCycles() {
+		vertices.clear();
+		edges.clear();
+		// 3 vertices, 0 1 2, triangle
+		for (int i = 0; i < 5; ++i) {
+			addVertex(new Vertex(i));
+		}
 		
+		addEdgeMutually(1,0);
+		addEdgeMutually(0,2);
+		addEdgeMutually(2,0);
+		addEdgeMutually(0,3);
+		addEdgeMutually(3,4);
+
 	}
-	
+
 	private boolean isCyclic(Vertex vertex, HashMap<Vertex, Boolean> visited, Vertex parent) {
 		visited.put(vertex, true);
 
@@ -338,7 +350,20 @@ public class Graph {
 			}
 			else {
 				if (parent != neighbor) {
-					return false;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean isCyclic() {
+		HashMap<Vertex, Boolean> visited = new HashMap<Vertex, Boolean>();
+		
+		for (Vertex vertex: vertices) {
+			if (!visited.containsKey(vertex)) {
+				if (isCyclic(vertex, visited, null) == true) {
+					return true;
 				}
 			}
 		}
@@ -363,8 +388,8 @@ public class Graph {
 		// http://www.geeksforgeeks.org/detect-cycle-undirected-graph/
 		// cannot figure this out.... commenting out
 		// must be an undirected graph.. maybe that's why? gotta fix it now!!!
-		//constructDirectedGraphWithCycle();
-		assertEquals(true, isCyclic(vertices.get(0), new HashMap<Vertex, Boolean>(), null));
+		constructedUndirectedGraphWithCycles();
+		assertEquals(true, isCyclic());
 	}
 	
 	private void topologicalSorting(Vertex vertex, HashMap<Vertex, Boolean> visited, Stack<Vertex> stack) {
@@ -500,5 +525,11 @@ public class Graph {
 		}
 		
 		System.out.println();
+	}
+	
+	@Test
+	public void isTreeOrNot() {
+		constructedUndirectedGraphWithCycles();
+		assertEquals(true, isCyclic());
 	}
 }
