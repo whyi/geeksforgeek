@@ -336,5 +336,31 @@ public class Array {
 	public void longestBitonicSequence() {
 		assertEquals(6, longestBitonicSequence(new int[] {1,4,45,6,10,8}));
 	}
-
+	
+	@Test
+	public void maximumDifferenceInArray() {
+		int[] arr = {80,2,6,3,100};
+		
+		int[] diff = new int[arr.length];
+		
+		for (int i = 0; i < arr.length-1; ++i) {
+			diff[i] = arr[i+1] - arr[i];
+		}
+		
+		printArray(diff);
+		int maxDiff = diff[0];
+		for (int i = 1; i < arr.length-1; ++i) {
+			// always wondered wtf this is.. figured that this is needed as we want the MAXIMUM sum.
+			// therefore we bring in the previous sum into the consideration!
+			if (diff[i-1] > 0) {
+				diff[i] += diff[i-1];
+				printArray(diff);
+			}
+			if (maxDiff < diff[i]) {
+				maxDiff = diff[i];
+			}
+		}
+		
+		assertEquals(198, maxDiff);
+	}
 }
