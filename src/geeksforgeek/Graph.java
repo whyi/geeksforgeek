@@ -201,6 +201,19 @@ public class Graph {
 		
 		return result;
 	}
+	
+	public void depthFirstTraversalRecursive(Vertex v, HashMap<Vertex, Boolean> visited) {
+		// mark as visited
+		visited.put(v, true);
+		System.out.print(v.data + " ");
+		
+		for (Vertex neighbor : v.neighbors) {
+			if (!visited.containsKey(neighbor)) {
+				depthFirstTraversalRecursive(neighbor, visited);
+			}
+		}
+		
+	}	
 
 	public void printDepthFirstTraversal(int startIndex) {
 		final ArrayList<Integer> result = depthFirstTraversal(startIndex);
@@ -249,6 +262,7 @@ public class Graph {
 		assertEquals(expectedBFS, breadthFirstTraversal(0));
 		ArrayList<Integer> expectedDFS = new ArrayList<Integer>(Arrays.asList(new Integer[]{0,4,3,2,1}));
 		assertEquals(expectedDFS, depthFirstTraversal(0));
+		depthFirstTraversalRecursive(vertices.get(0), new HashMap<Vertex, Boolean>());
 	}
 	
 	// A utility function to find the subset of an element i
@@ -342,5 +356,56 @@ public class Graph {
 		// http://www.geeksforgeeks.org/detect-cycle-undirected-graph/
 		// cannot figure this out.... commenting out
 		// assertEquals(false, isCyclic(vertices.get(0), new HashMap<Vertex, Boolean>(), null));
+	}
+	
+	private void topologicalSorting(Vertex vertex, HashMap<Vertex, Boolean> visited, Stack<Vertex> stack) {
+		visited.put(vertex, true);
+		
+		for (Vertex neighbor: vertex.neighbors) {
+			if (!visited.containsKey(neighbor)) {
+				topologicalSorting(neighbor, visited, stack);
+			}
+		}
+		stack.push(vertex);
+	}
+	
+	private void constructTopologicalSortingGraph() {
+		vertices.clear();
+		edges.clear();
+		// 0 1 2 3 4 5
+		for (int i = 0; i < 6; ++i) {
+			addVertex(new Vertex(i));
+		}
+		
+		addEdge(5,2);
+		addEdge(5,0);
+		addEdge(2,3);
+		addEdge(3,1);
+		addEdge(4,1);
+		addEdge(4,0);
+	}
+	
+	@Test
+	public void topologicalSorting() {
+		constructTopologicalSortingGraph();
+		System.out.println("topological sorting");
+
+		HashMap<Vertex, Boolean> visited = new HashMap<Vertex, Boolean>();
+		Stack<Vertex> stack = new Stack<Vertex>();
+		for (Vertex vertex: vertices) {
+			if (!visited.containsKey(vertex)) {
+				topologicalSorting(vertex, visited, stack);
+			}
+		}
+		
+		while (!stack.isEmpty()) {
+			System.out.print(stack.pop().data + " ");
+		}
+		System.out.println();
+	}
+	
+	@Test
+	public void longestPathUsingTopologicalSorting() {
+		
 	}
 }
