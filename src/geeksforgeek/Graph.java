@@ -13,20 +13,27 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 class Vertex {
 	public ArrayList<Vertex> neighbors = null;
+	public ArrayList<Integer> neighborIndices = null;
 	public Integer data;
+	public Integer weight;
 
 	public Vertex() {
 		neighbors = new ArrayList<Vertex>();
+		neighborIndices = new ArrayList<Integer>();
 		data = null;
+		weight = 0;
 	}
 	
 	public Vertex(Integer data) {
 		this.data = data;
 		neighbors = new ArrayList<Vertex>();
+		neighborIndices = new ArrayList<Integer>();
+		weight = 0;
 	}	
 
 	public void addNeighbor(Vertex vertex) {
 		neighbors.add(vertex);
+		weight = 0;
 	}
 }
 
@@ -82,7 +89,7 @@ public class Graph {
 		if (fromVertex != null && toVertex != null) {
 			fromVertex.addNeighbor(toVertex);
 			// support for directed graph
-			edges.add(new Edge(from, to));			
+			edges.add(new Edge(from, to));
 			return true;
 		}
 		
@@ -355,7 +362,9 @@ public class Graph {
 		
 		// http://www.geeksforgeeks.org/detect-cycle-undirected-graph/
 		// cannot figure this out.... commenting out
-		// assertEquals(false, isCyclic(vertices.get(0), new HashMap<Vertex, Boolean>(), null));
+		// must be an undirected graph.. maybe that's why? gotta fix it now!!!
+		//constructDirectedGraphWithCycle();
+		assertEquals(true, isCyclic(vertices.get(0), new HashMap<Vertex, Boolean>(), null));
 	}
 	
 	private void topologicalSorting(Vertex vertex, HashMap<Vertex, Boolean> visited, Stack<Vertex> stack) {
@@ -404,8 +413,92 @@ public class Graph {
 		System.out.println();
 	}
 	
+	private boolean addWeightedEdge(int from, int to, int weight) {
+		final Vertex fromVertex = getVertexAt(from);
+		Vertex toVertex = getVertexAt(to);
+		toVertex.weight = weight;
+
+		if (fromVertex != null && toVertex != null) {
+			fromVertex.addNeighbor(toVertex);
+			// support for directed graph
+			edges.add(new Edge(from, to));
+
+			// support for neighborIndices
+			fromVertex.neighborIndices.add(to);			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private void constructGraphForLongestPathUsingTopologicalSorting() {
+		vertices.clear();
+		edges.clear();
+		// 0 1 2 3 4 5
+		for (int i = 0; i < 6; ++i) {
+			addVertex(new Vertex(i));
+		}
+		
+	    addWeightedEdge(0, 1, 5);
+	    addWeightedEdge(0, 2, 3);
+	    addWeightedEdge(1, 3, 6);
+	    addWeightedEdge(1, 2, 2);
+	    addWeightedEdge(2, 4, 4);
+	    addWeightedEdge(2, 5, 2);
+	    addWeightedEdge(2, 3, 7);
+	    addWeightedEdge(3, 5, 1);
+	    addWeightedEdge(3, 4, -1);
+	    addWeightedEdge(4, 5, -2);
+	}
+	
+	// slightly modified to support returning index directly (in the stack)
+	private void topologicalSortingForLongestPath(int index, HashMap<Integer, Boolean> visited, Stack<Integer> stack) {
+		visited.put(index, true);
+		
+		for (Integer neighbor: vertices.get(index).neighborIndices) {
+			if (!visited.containsKey(neighbor)) {
+				topologicalSortingForLongestPath(neighbor, visited, stack);
+			}
+		}
+		stack.push(index);
+	}
+
+	// FIXME : debug this and fix the null pointer Exception
 	@Test
 	public void longestPathUsingTopologicalSorting() {
+		System.out.println("\nlongestPathUsingTopologicalSorting");
+		constructGraphForLongestPathUsingTopologicalSorting();
+
+		HashMap<Integer, Boolean> visited = new HashMap<Integer, Boolean>();
+		Stack<Integer> stack = new Stack<Integer>();
+		for (int i = 0; i < vertices.size(); ++i) {
+			if (!visited.containsKey(i)) {
+				topologicalSortingForLongestPath(i, visited, stack);
+			}
+		}
 		
+		int[] distances = new int[vertices.size()];
+		for (int i = 0; i < vertices.size(); ++i) {
+			distances[i] = Integer.MAX_VALUE;
+		}
+		// starting point;
+		distances[1] = 0;
+
+		while (!stack.isEmpty()) {
+			Integer vertexIndex = stack.pop();
+			for (Integer neighborIndex : vertices.get(vertexIndex).neighborIndices) {
+				if (distances[neighborIndex] < distances[vertexIndex] + vertices.get(vertexIndex).weight) {
+					distances[neighborIndex] = distances[vertexIndex] + vertices.get(vertexIndex).weight;
+				}
+			}
+		}
+		
+		for (int i = 0; i < distances.length; ++i) {
+			if (distances[i] != Integer.MAX_VALUE) {
+				System.out.print(distances[i] + " ");	
+			}
+		}
+		
+		System.out.println();
 	}
 }
