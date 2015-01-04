@@ -68,7 +68,7 @@ public class DynamicProgramming {
 	
 	@Test
 	public void test() {
-		for (int i = 0; i < 40; ++i) {
+		for (int i = 0; i < 5; ++i) {
 			lookupTable.clear();
 			for (int j = 0; j < i+1; ++j) {
 				lookupTable.add(null);
@@ -80,5 +80,66 @@ public class DynamicProgramming {
 			assertEquals(fibTabulation(i), fibRecursive(i));
 			assertEquals(fibTabulation(i), fibIterative(i));
 		}
+	}
+	
+	private static int computeMinimumNumberOfDrops(int numberOfEggs, int numberOfFloors) {
+		if (numberOfFloors == 1 || numberOfFloors == 0) {
+			return 1;
+		}
+		
+		if (numberOfEggs == 1) {
+			return numberOfFloors;
+		}
+		
+		int result = Integer.MAX_VALUE;
+		
+		for (int i = 1; i <= numberOfFloors; ++i) {
+			// reason for max : we want the WORST case.......
+			// as the best case(when we take min) it's not so meaningful.
+			int minimumSoFar = Integer.max(
+					computeMinimumNumberOfDrops(numberOfEggs-1, i-1),  // egg breaks
+					computeMinimumNumberOfDrops(numberOfEggs,   numberOfFloors-i)); // egg didn't break
+			
+			if (minimumSoFar < result) {
+				result = minimumSoFar;
+			}
+		}
+
+		return result+1;
+	}
+	
+	private static int computeMinimumNumberOfDropsDynamicProgramming(int numberOfEggs, int numberOfFloors) {
+		int[][] lookup = new int[numberOfEggs+1][numberOfFloors+1];
+		for (int i = 0; i <= numberOfEggs; ++i) {
+			lookup[i] = new int[numberOfFloors+1];
+			for (int j = 0; j <= numberOfFloors; ++j) {
+				if (j == 1) {
+					lookup[i][j] = 1;
+				}
+				else {
+					lookup[i][j] = Integer.MAX_VALUE;
+				}
+				if (i == 1) {
+					lookup[i][j] = j;
+				}
+			}
+		}
+		
+		for (int i = 2; i < numberOfEggs; ++i) {
+			for (int j = 2; j < numberOfFloors; ++j) {
+				for (int egg = 1; egg <= j; ++egg ) {
+					int result = 1 + Integer.max(lookup[i-1][egg-1], lookup[i][j-egg]);
+					//lookup[i][j] =
+				}
+			}
+		}
+	}
+	
+	@Test
+	public void eggDrop() {
+		int numberOfEggs = 2;
+		int numberOfFloors = 10;
+		assertEquals(4,computeMinimumNumberOfDrops(numberOfEggs, numberOfFloors));
+		assertEquals(4,eggDrop(numberOfEggs, numberOfFloors));
 	}
 }
