@@ -89,6 +89,7 @@ public class Backtracking {
 		int result = longestIncreasingSubsequence(inputArr, inputArr.length, 1);
 		//int maxMyImpl = longestIncreasingSubsequenceMyImpl(inputArr);
 		System.out.println(result);
+		// note that there's nlogn solution for this... 
 		int maxGeeksForGeeks = longestIncreasingSubsequenceGeeksForGeeks(inputArr);
 		//assertEquals(max1, maxMyImpl);
 		assertEquals(result, maxGeeksForGeeks);
