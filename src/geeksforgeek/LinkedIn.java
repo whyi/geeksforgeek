@@ -7,8 +7,15 @@ import org.junit.Test;
 public class LinkedIn {
 
 	// assuming the window is sorted in ascending order by # of tickets available
+	// in order to sell it..
+	// or let's look at the problem differently.
+	// it's about computing sum..
+	// given window # is n,
+	// it's n + (n-1) + (n-2) + ... until the next window
+	// and the next window has the same formula. isn't this a fibonacci number? (maybe?)
+	// ask if this will be called millions of times. then go for dynamic fibonacci version
+	
 	public int maxPrice(int[] window, int m) {
-		System.out.println("m is " + m);
 		int count = 0;
 		int price = 0;
 		for (int i = window.length-1; i >= 1; --i) {
@@ -16,7 +23,6 @@ public class LinkedIn {
 			int ticketsInNextWindow = window[i-1];
 			
 			while (ticketsInCurrentWindow != ticketsInNextWindow-1 && ticketsInCurrentWindow != 0) {
-				System.out.println("selling " + ticketsInCurrentWindow);
 				price += ticketsInCurrentWindow;
 				--ticketsInCurrentWindow; // mark as sold
 				++count;
