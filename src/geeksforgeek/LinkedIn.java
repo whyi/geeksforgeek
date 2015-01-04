@@ -192,5 +192,109 @@ public class LinkedIn {
 		 3) Given a string find the number of distinct palindromic substrings(should optimize time complexity)
 		 */
 	}
+	
+	@Test
+	public void interview1() {
+/*
+ * Interview 1:
+1) Given a boolean expression find the number of ways to parenthesis it so that it evaluates to true
+2) http://www.geeksforgeeks.org/dynamic-programming-set-31-optimal-strategy-for-a-game/
+3) Given n stairs , you climb 1 , 2 or 3 stairs at a time . Find the number of ways to reach the nth step
+ */
+		// n%3
+		// case 0 : 
+		//   1 + 1 + 1
+		//   1 + 2
+		//   2 + 1
+		//   3
+		// case 1 : 
+		//   1 + 1
+		//   2
+		// case 2 :
+		//   1
+		
+		// e.g when n is 4
+		//   it's case 1
+		//   we have 2 choices really!?
+		//   not really. it's actually case 0 * case 1
+		//   which is 4 * 2 = 8 ways
+		//   ok what about going directly as 2+2? is it covered?
+		//   
+	}
+	
+	@Test
+	public void interview2() {
+		/*
+		 * Interview 2:
+			1) Given the pointer to the root of the tree and two values val1 and val2 .
+			Find the length of path between the values val1 and val2 in the binary tree.
+			{ handle corner cases where both the values are on the same path}
+		 */
+		/*
+		 * what if we could get the Lowest Common Ancestor or something?
+		 * then the length would be sum of lengths from the parent to each node
+		 * http://getpocket.com/a/read/276317253
+		 */
+		/*
+		 * 2) Given a mapping between numbers and alphabets . Find the number of ways to decode a sequence of numbers
+		 	eg: a - 21
+		 		b - 2
+		 		c - 54
+		 		d - 5
+		 		e - 4
+		 		f - 1
+		        2154
+		     1) ac
+		     2) ade
+		     3) bfc
+		     4) bfde
+		  4 ways to decode 
+		 */
+	}
+	
+	@Test
+	public void interview3() {
+/*
+ * Interview 3:
+1) Given a matrix of 0 s and 1 s Find the number of connected components having 1s
 
+   0 0 1 0 1
+   0 1 1 0 1
+   0 0 0 1 1
+   0 0 1 1 0 
+The above matrix has 2 components
+constraints: Time complexity O(N) space complexity O(1)
+
+	hmm.. very interesting. I was thinking of doing BFT and mark cells as visited as I go until cannot
+	find more possible moves.
+	But that require visited status (hash table).
+	A quick walkaway from the problem : ask if he would consider bitmap as hashtable or O(1)??
+	
+	2) Given a tree check if it is a binary search tree or not
+	   constraints: space complexity O(1)
+	   
+	   recursively
+	   isBST(int parentValue, BSTNode node, boolean isLeft) {
+	   	 if (node == null) {
+	   	 	return true;
+		 }
+		
+		// should be less than parentValue-1 when it's left
+		// should be bigger than parentValue+1 when it's right
+		if (isLeft && node.value >= parentValue-1)
+			return false;
+		}
+	    else {
+	    	if (node.value <= parentValue-1)
+	    		return false;
+	    }
+   	 	return isBST(node.value, node.left, true) && isBST(node.value, node.right, false);
+	   }
+	   
+	   and initially call
+	   isBST(root.value, root.left, true) && isBST(root.value, root.right, false);
+	   I remember there was an article for this in GeeksForGeeks let's review it!
+	
+ */
+	}
 }
