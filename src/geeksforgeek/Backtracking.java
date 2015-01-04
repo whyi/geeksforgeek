@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Stack;
 
 import org.junit.Test;
 
@@ -115,11 +116,96 @@ public class Backtracking {
 		}
 	}
 	
+	public static int longestCommonSubsequenceDynamicProgramming(String s1, String s2) {
+		final int m = s1.length();
+		final int n = s2.length();
+
+		int[][] lookup = new int[m+1][n+1];
+		
+		for (int i = 0; i <= m; ++i) {
+			lookup[i] = new int[n+1];
+			for (int j = 0; j <= n; ++j) {
+				lookup[i][j] = 0;
+			}
+		}
+
+		for (int i = 0; i <= m; ++i) {
+			for (int j = 0; j <= n; ++j) {
+				System.out.print(lookup[i][j] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println("------------------");
+		
+		for (int i = 0; i < m; ++i) {
+			for (int j = 0; j < n; ++j) {
+				if (i == 0 || j == 0) {
+					lookup[i][j] = 0;
+				}
+				else if (s1.charAt(i-1) == s2.charAt(j-1)) {
+					lookup[i][j] = lookup[i-1][j-1] + 1;
+				}
+				else {
+					lookup[i][j] = Integer.max(lookup[i-1][j], lookup[i][j-1]);
+				}
+			}
+		}
+		
+		for (int i = 0; i <= m; ++i) {
+			for (int j = 0; j <= n; ++j) {
+				System.out.print(lookup[i][j] + " ");
+			}
+			System.out.println();
+		}
+		
+		Stack<Character> stack = new Stack<Character>();
+		
+		int i = m, j = n;
+		while (i > 0 && j > 0) {
+			// If current character in X[] and Y are same, then
+			// current character is part of LCS
+			if (s1.charAt(i-1) == s2.charAt(j-1)) {
+				stack.push(s1.charAt(i-1));
+				i--; j--;
+			}
+	 
+	        // If not same, then find the larger of two and
+			// go in the direction of larger value
+			else if (lookup[i-1][j] > lookup[i][j-1])
+				i--;
+			else
+				j--;
+		}
+	 
+		while (!stack.isEmpty()) {
+			System.out.print(stack.pop());
+		}
+		System.out.println();
+		
+		// FIXME
+		return lookup[m-1][n-1]+1;
+		
+	}
+	
 	@Test
 	public void longestCommonSubsequence() {
+		// GTAB
 		String s1 = "AGGTAB";
 		String s2 = "GXTXAYB";
 		int result = longestCommonSubsequence(s1, s2, s1.length()-1, s2.length()-1);
-		System.out.println("result : " + result);
+		int result2 = longestCommonSubsequenceDynamicProgramming(s1, s2);
+		assertEquals(result, result2);
+		
+		s1 = "AGGTAC";
+		s2 = "GXTXAYB";
+		result = longestCommonSubsequence(s1, s2, s1.length()-1, s2.length()-1);
+		result2 = longestCommonSubsequenceDynamicProgramming(s1, s2);
+		assertEquals(result, result2);		
+		
+		s1 = "AGGTACCBC";
+		s2 = "GXTXAYB";
+		result = longestCommonSubsequence(s1, s2, s1.length()-1, s2.length()-1);
+		result2 = longestCommonSubsequenceDynamicProgramming(s1, s2);
+		assertEquals(result, result2);		
 	}
 }
