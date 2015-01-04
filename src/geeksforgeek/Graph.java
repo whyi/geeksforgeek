@@ -550,13 +550,13 @@ public class Graph {
 		// see if all vertices are visited
 		for (Vertex vertex: vertices) {
 			if (!visited.containsKey(vertex)) {
-				System.out.println("vertex " + vertex.data + " is not visited! WTF!");
+				//System.out.println("vertex " + vertex.data + " is not visited! WTF!");
 				isAllVisited = false;
 				break;
 			}
 		}
 		
-		System.out.println("hasCycle : " +  hasCycle + " visited " + isAllVisited);
+		//System.out.println("hasCycle : " +  hasCycle + " visited " + isAllVisited);
 		
 		boolean isTree = !hasCycle && isAllVisited;
 		return isTree;
@@ -564,8 +564,8 @@ public class Graph {
 	
 	@Test
 	public void isTreeOrNot() {
-		//constructedUndirectedGraphWithCycles();
-		//assertEquals(false, isTree());
+		constructedUndirectedGraphWithCycles();
+		assertEquals(false, isTree());
 		
 		constructGraphWithoutCycle();
 		assertEquals(true, isTree());		
