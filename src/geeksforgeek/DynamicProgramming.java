@@ -68,7 +68,7 @@ public class DynamicProgramming {
 	
 	@Test
 	public void test() {
-		for (int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 40; ++i) {
 			lookupTable.clear();
 			for (int j = 0; j < i+1; ++j) {
 				lookupTable.add(null);
