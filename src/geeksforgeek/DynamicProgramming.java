@@ -117,4 +117,102 @@ public class DynamicProgramming {
 		int numberOfFloors = 10;
 		assertEquals(4,computeMinimumNumberOfDrops(numberOfEggs, numberOfFloors));
 	}
+	
+	private static int cuttingRod(int[] prices, int n) {
+		if (n <= 0) {
+			return 0;
+		}
+
+		++calcCount;
+		int maxSoFar = Integer.MIN_VALUE;
+
+		for (int i = 0; i < n; ++i) {
+			maxSoFar = Integer.max(cuttingRod(prices, n-i-1) + prices[i], maxSoFar);
+		}
+		return maxSoFar;
+	}
+	
+	public static int[] lookup;
+	
+	// O(n^2)
+	private static int cuttingRodDynamicProgramming(int[] prices, int n) {
+//		if (n <= 0) {
+//			return 0;
+//		}
+		lookup[0] = 0;
+
+		int maxSoFar = Integer.MIN_VALUE;
+
+		for (int i = 1; i <= n; ++i) {
+			for (int j = 0; j < i; ++j) {
+				++calcCount;
+				maxSoFar = Integer.max(lookup[i-j-1] + prices[j], maxSoFar);
+			}
+			lookup[i] = maxSoFar;
+		}
+		return lookup[n];
+	}	
+	
+	private static int testCuttingRod(int[] prices, int n) {
+		if (n == 0) {
+			return 0;
+		}
+		
+		++calcCount;
+		int maxSoFar = Integer.MIN_VALUE;
+		for (int i = 0; i < n; ++i) {
+			maxSoFar = Integer.max(maxSoFar, testCuttingRod(prices, n-i-1)+prices[i]);
+		}
+		return maxSoFar;
+	}
+	
+	public static int readingCount = 0;
+	public static int calcCount = 0;
+	private static int testCuttingRodDynamicProgramming(int[] prices, int n, int[] lookupTable) {
+		if (lookupTable[n] != -1) {
+			++readingCount;
+			return lookupTable[n];
+		}
+		
+		++calcCount;
+		int maxSoFar = Integer.MIN_VALUE;
+		for (int i = 0; i < n; ++i) {
+			lookupTable[n-i-1] = testCuttingRodDynamicProgramming(prices, n-i-1, lookupTable);
+			maxSoFar = Integer.max(maxSoFar, lookupTable[n-i-1]+prices[i]);
+			
+		}
+		return maxSoFar;
+	}
+	
+	private static int testCuttingRodDynamicProgramming(int[] prices, int n) {
+		int[] lookupTable = new int[n+1];
+		lookupTable[0] = 0;
+		for (int i = 1; i <= n; ++i) {
+			lookupTable[i] = -1;
+		}
+		return testCuttingRodDynamicProgramming(prices, n, lookupTable);
+	}
+	
+	@Test
+	public void cuttingRod() {
+		// optimal substructure = max(currentPrice + takingRod, currentPrice + notTakingRod)
+		//                      = max(currentPrice+prices[nextRod], currentPrice)
+		int[] arr = {1, 5, 8, 9, 10, 17, 17, 20};
+		lookup = new int[arr.length+1];
+		System.out.println("cuttingRod : "       + cuttingRod(arr, arr.length) + " " + calcCount);
+		calcCount = 0;
+		System.out.println("cuttingRodDP : "     + cuttingRodDynamicProgramming(arr, arr.length) + " " + calcCount);
+		calcCount = 0;
+		System.out.println("cuttingRod : "   + testCuttingRod(arr, arr.length) + " " + calcCount);
+		calcCount = 0;
+		System.out.println("cuttingRodDP : " + testCuttingRodDynamicProgramming(arr, arr.length) + " " + calcCount + " " + readingCount);
+		
+	}
+	
+	@TEst
+	public void fibonacciDelvedInto() {
+		// OK. not really dynamic programming but in general just fibonacci
+		// article says that it can be done in O(logn) using the multiplication matrix how nice!
+		// need to memorize why it's possible though
+	}
 }
