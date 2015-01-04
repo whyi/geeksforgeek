@@ -222,6 +222,10 @@ public class LinkedIn {
 		//   
 	}
 	
+	private int lengthBetweenTwoNodes(BSTNode root, int val1, int val2) {
+		return 0;
+	}
+	
 	@Test
 	public void interview2() {
 		/*
@@ -268,33 +272,13 @@ constraints: Time complexity O(N) space complexity O(1)
 	hmm.. very interesting. I was thinking of doing BFT and mark cells as visited as I go until cannot
 	find more possible moves.
 	But that require visited status (hash table).
-	A quick walkaway from the problem : ask if he would consider bitmap as hashtable or O(1)??
+	ask if he would consider bitmap as hashtable or O(1)??
 	
 	2) Given a tree check if it is a binary search tree or not
 	   constraints: space complexity O(1)
-	   
-	   recursively
-	   isBST(int parentValue, BSTNode node, boolean isLeft) {
-	   	 if (node == null) {
-	   	 	return true;
-		 }
-		
-		// should be less than parentValue-1 when it's left
-		// should be bigger than parentValue+1 when it's right
-		if (isLeft && node.value >= parentValue-1)
-			return false;
-		}
-	    else {
-	    	if (node.value <= parentValue-1)
-	    		return false;
-	    }
-   	 	return isBST(node.value, node.left, true) && isBST(node.value, node.right, false);
-	   }
-	   
-	   and initially call
-	   isBST(root.value, root.left, true) && isBST(root.value, root.right, false);
+	   // inorder traversal
 	   I remember there was an article for this in GeeksForGeeks let's review it!
-	
+		http://www.geeksforgeeks.org/a-program-to-check-if-a-binary-tree-is-bst-or-not/
  */
 	}
 }

@@ -735,4 +735,126 @@ public class BinarySearchTree {
 		assertEquals(true, efficientAndCorrectIsBST(root2));
 
 	}
+	
+	private static void preOrderSerialize(BSTNode node, ArrayList<Integer> result) {
+		if (node == null) {
+			return;
+		}
+		
+		result.add(node.data);
+		preOrderSerialize(node.left, result);
+		preOrderSerialize(node.right, result);
+	}
+	
+	private static ArrayList<Integer> serialize(BSTNode root) {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		preOrderSerialize(root, result);
+		return result;
+	}
+	
+	// naive, O(n^2)
+	private static BSTNode deserialize(ArrayList<Integer> serialized, int preIndex, int low, int high) {
+		if (preIndex >= serialized.size() || low > high) {
+			return null;
+		}
+		
+		// 1st is alway the root
+		BSTNode root = new BSTNode(serialized.get(preIndex));
+		++preIndex;
+		
+		if (low == high) {
+			return root;
+		}
+
+		int highStart = 0;
+		for (int i = low; i <= high; ++i) {
+			if (root.data > serialized.get(i)) {
+				highStart = i;
+				break;
+			}
+		}
+		
+		root.left = deserialize(serialized, preIndex, preIndex, highStart-1);
+		root.right = deserialize(serialized, preIndex, highStart, high);
+		return root;
+	}
+	
+	public static int index = 0;
+	
+	// optimized, O(n)
+	// min max and key!
+	private static BSTNode deserializeOptimized(ArrayList<Integer> serialized, int key, int min, int max) {
+		
+		if (index >= serialized.size()) {
+			return null;
+		}
+
+		BSTNode root = null;
+		
+		if (key > min && key < max) {
+			root = new BSTNode(key);
+			++index;
+			
+			if (index < serialized.size()) {
+				root.left = deserializeOptimized(serialized, serialized.get(index), min, key);
+				root.right = deserializeOptimized(serialized, serialized.get(index), key, max);
+			}
+		}
+
+		return root;
+	}
+	
+	private static BSTNode deserializeUsingStack(ArrayList<Integer> serialized) {
+		Stack<BSTNode> stack = new Stack<BSTNode>();
+		BSTNode root = new BSTNode(serialized.get(0));
+		stack.push(root);
+		
+		BSTNode tmp = null;
+		for (int i = 1; i < serialized.size(); ++i) {
+			final int currentValue = serialized.get(i);
+			tmp = null;
+			while (!stack.isEmpty() && currentValue > stack.peek().data) {
+				tmp = stack.pop();
+			}
+			
+			if (tmp != null) {
+				tmp.right = new BSTNode(currentValue);
+				stack.push(tmp.right);
+			}
+			else {
+				stack.peek().left = new BSTNode(currentValue);
+				stack.push(stack.peek().left);
+			}
+		}
+		
+		return root;
+	}
+	
+	@Test
+	public void serializeDeserialize() {
+		BSTNode root = new BSTNode(10);
+		root.left = new BSTNode(5);
+		root.left.left = new BSTNode(1);
+		root.left.right = new BSTNode(7);
+		root.right = new BSTNode(40);
+		root.right.right = new BSTNode(50);
+		
+		ArrayList<Integer> serialized = serialize(root);
+		BSTNode deSerialized = deserialize(serialized, 0, 0, serialized.size()-1);
+		System.out.println("deserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		Helper.printInLevelOrder(deSerialized);
+		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");
+		serialized.clear();
+		serialized = serialize(root);
+		index = 0;
+		BSTNode deSerializedOptimized = deserializeOptimized(serialized, serialized.get(0), Integer.MIN_VALUE, Integer.MAX_VALUE);
+		System.out.println("deserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		Helper.printInLevelOrder(deSerializedOptimized);
+		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");		
+		
+		BSTNode deSerializedOptimizedUsingStack = deserializeUsingStack(serialized);
+		System.out.println("deserialized using stack!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		Helper.printInLevelOrder(deSerializedOptimizedUsingStack);
+		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");		
+	}
 }
