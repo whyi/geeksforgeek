@@ -36,47 +36,28 @@ public class Backtracking {
 		stringPermutation("abc", 0, 2);
 	}
 	
-	// naive recursive
+	// naive, recursive
 	private int longestIncreasingSubsequence(int[] arr, int n, int absoluteMax) {
-		if (n == 1) {
-			return n;
+		if (n==1) {
+			return 1;
 		}
 		
-		int maxEndingHere = 1;
-		
+		int maxSoFar = 1;
+
 		for (int i = 1; i < n; ++i) {
 			int result = longestIncreasingSubsequence(arr, i, absoluteMax);
-			if (arr[i-1] < arr[i] && result+1 > maxEndingHere) {
-				maxEndingHere = result+1;
+			if (arr[i-1] < arr[n-1] && maxSoFar < result+1) {
+				maxSoFar = result+1;
 			}
 		}
 		
-		if (absoluteMax < maxEndingHere) {
-			absoluteMax = maxEndingHere;
+		if (maxSoFar > absoluteMax) {
+			absoluteMax = maxSoFar;
 		}
-		
 		return absoluteMax;
 	}
 	
 	// dynamic programming O(n^2)
-	private int longestIncreasingSubsequenceMyImpl(int[] arr) {
-		int[] lookup = new int[arr.length];
-		for (int i = 0; i < arr.length; ++i) {
-			lookup[i] = 1;
-		}
-
-		for (int i = arr.length-1; i >= 1; --i) {
-			if (arr[i] > arr[i-1]) {
-				lookup[i-1] = lookup[i]+1;
-			}
-			else {
-				lookup[i-1] = lookup[i];
-			}
-		}
-		
-		return lookup[0];
-	}
-	
 	private int longestIncreasingSubsequenceGeeksForGeeks(int[] arr) {
 		int[] lookup = new int[arr.length];
 		for (int i = 0; i < arr.length; ++i) {
@@ -101,23 +82,18 @@ public class Backtracking {
 		return result;
 	}	
 
-	public void evaluateLongestIncreasingSubsequence(int[] inputArr) {
-		int max1 = longestIncreasingSubsequence(inputArr, 8, 1);
-		//int maxMyImpl = longestIncreasingSubsequenceMyImpl(inputArr);
-		int maxGeeksForGeeks = longestIncreasingSubsequenceGeeksForGeeks(inputArr);
-		//assertEquals(max1, maxMyImpl);
-		assertEquals(max1, maxGeeksForGeeks);
-	}
-	
 	@Test
 	public void longestIncreasingSubsequence() {
-		evaluateLongestIncreasingSubsequence(new int[]{ 10, 22, 9, 33, 21, 50, 41, 60 });
-		evaluateLongestIncreasingSubsequence(new int[]{ 10, 22, 9, 33, 21, 50, 11, 60 });
-		evaluateLongestIncreasingSubsequence(new int[]{ 10, 21,22,23,24,11,25,18,60 });
-		// 10 22 50 60
-		// 9 21 50 60
-		// 3 21 50 60
-		// 21 50
-		// 21 60
+		// 10 22 33 50 60
+		int[] inputArr = new int[]{ 10, 22, 9, 33, 21, 50, 41, 60 };
+		int result = longestIncreasingSubsequence(inputArr, inputArr.length, 1);
+		//int maxMyImpl = longestIncreasingSubsequenceMyImpl(inputArr);
+		System.out.println(result);
+		int maxGeeksForGeeks = longestIncreasingSubsequenceGeeksForGeeks(inputArr);
+		//assertEquals(max1, maxMyImpl);
+		assertEquals(result, maxGeeksForGeeks);
+		//evaluateLongestIncreasingSubsequence(new int[]{ 10, 22, 9, 33, 21, 50, 11, 60 });
+		//evaluateLongestIncreasingSubsequence(new int[]{ 10, 21,22,23,24,11,25,18,60 });
+
 	}
 }
