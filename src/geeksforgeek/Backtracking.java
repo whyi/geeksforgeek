@@ -95,6 +95,31 @@ public class Backtracking {
 		assertEquals(result, maxGeeksForGeeks);
 		//evaluateLongestIncreasingSubsequence(new int[]{ 10, 22, 9, 33, 21, 50, 11, 60 });
 		//evaluateLongestIncreasingSubsequence(new int[]{ 10, 21,22,23,24,11,25,18,60 });
-
+	}
+	
+	// naive recursive O^n in worst case when they all mismatch
+	private static int longestCommonSubsequence(String s1, String s2, int i, int j) {
+		
+		// check this condition, in geeks for geeks those were given as i == 0 || j == 0
+		// Why? it's zero based anyway.. not sure why until I grab the C code and compile and compare one by one
+		// not gonna do it for now.
+		if (i < 0 || j < 0) {
+			return 0;
+		}
+		
+		if (s1.charAt(i) == s2.charAt(j)) {
+			return 1+longestCommonSubsequence(s1,s2,i-1,j-1);
+		}
+		else {
+			return Integer.max(longestCommonSubsequence(s1,s2,i-1,j), longestCommonSubsequence(s1,s2,i,j-1));
+		}
+	}
+	
+	@Test
+	public void longestCommonSubsequence() {
+		String s1 = "AGGTAB";
+		String s2 = "GXTXAYB";
+		int result = longestCommonSubsequence(s1, s2, s1.length()-1, s2.length()-1);
+		System.out.println("result : " + result);
 	}
 }
