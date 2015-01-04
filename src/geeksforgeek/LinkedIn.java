@@ -81,5 +81,15 @@ public class LinkedIn {
 		// this worked...... can I do better? optimization?
 		//
 	}
+	
+	@Test
+	public void getIntComplement() {
+		// get the maximum # can be represented using 32bits integer
+		// given number, halve it
+		// negate it.. get the signing bit off...
+		// this gets kinda complicated need to refresh my memory
+		
+		
+	}
 
 }
