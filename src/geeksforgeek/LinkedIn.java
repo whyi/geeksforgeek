@@ -3,6 +3,7 @@ package geeksforgeek;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.junit.Test;
@@ -378,6 +379,24 @@ For example: "-3.3425","80.0", both of them are number
 		System.out.println("KARMA JUMP2 STARTED");
 		boolean[] passable = new boolean[]{true, true, false, true, false, true, true, false, false, true, false};
 		assertEquals(true, karmaJump(passable, 0, 1));
+		
+		// Let's cover some corenre cases.
+		boolean[] nothing = new boolean[]{};
+		assertEquals(true, karmaJump(nothing, 0, 1));
+		
+		boolean[] falseOnly;
+		for (int i = 1; i < 10; ++i) {
+			falseOnly = new boolean[i];
+			Arrays.fill(falseOnly, false);
+			assertEquals(false, karmaJump(falseOnly, 0, 1));
+		}
+		
+		boolean[] trueOnly;
+		for (int i = 1; i < 10; ++i) {
+			trueOnly = new boolean[i];
+			Arrays.fill(trueOnly, true);
+			assertEquals(true, karmaJump(trueOnly, 0, 1));
+		}
 	}
 	
 	// again DP problem but can we be fancy?!
@@ -393,9 +412,6 @@ For example: "-3.3425","80.0", both of them are number
 	// FIXME : move to Karma.java!
 	// TODO: move to Karma.java!
 	public void karmaEvenFibonacci() {
-		// given n return only sum of even Fibonacci
-		
-		// regular Fibonacci
 		int prev1 = 1;
 		int prev2 = 0;
 		int current = 0;
@@ -403,7 +419,6 @@ For example: "-3.3425","80.0", both of them are number
 		int n = 10;
 		int totalSum = 0;
 		
-		//for (int i = 2; i < n+1; ++i) {
 		while (totalSum <= n) {
 			current = prev1+prev2;
 			
