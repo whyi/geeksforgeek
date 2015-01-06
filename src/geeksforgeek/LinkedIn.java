@@ -281,4 +281,476 @@ constraints: Time complexity O(N) space complexity O(1)
 		http://www.geeksforgeeks.org/a-program-to-check-if-a-binary-tree-is-bst-or-not/
  */
 	}
+	
+	@Test
+	public void isNumber() {
+		/*
+		 * Write an function to judge whether the input String is a number? 
+For example: "-3.3425","80.0", both of them are number
+		 */
+		
+//		int count = 0;
+//		String s = "123.90";
+//		boolean isNumber = true;
+//		while (true) {
+//			char c = s.charAt(count);
+//			if (count == 0) {
+//				if (!Character.isDigit(c) && !(c == '-')) {
+//					isNumber = false;
+//					break;
+//				}
+//			}
+//			if (count > 0) {
+//				
+//			}
+//			else {
+//				if (!Character.isDigit(c)) {
+//					isNumber = false;
+//					break;
+//				}
+//			}
+//			++count;
+//		}
+		
+		//Character.isDigit(arg0)
+	}
+	
+	// 1. verifying the optimal substructure
+	//    exponential 2^n or something
+
+	public static int[] naiveHashmap = new int[500];
+	private static boolean karmaJump(boolean[] array, int index, int velocity) {
+		// base case for true
+//		if (naiveHashmap[index] != -1) {
+//			if (naiveHashmap[index] == velocity) {
+//				System.out.println("found a match @ " + index + " " + velocity);
+//			}
+//		}
+//		else {
+//			naiveHashmap[index] = velocity;
+//		}
+//		System.out.println("KarmaJump " + index + " " + velocity);
+		if (index >= array.length) {
+			return true;
+		}
+		
+		if (array[index] == false) {
+			return false;
+		}
+		else {
+			if (velocity == 1) {
+				return karmaJump(array, index+velocity, velocity) ||
+						karmaJump(array, index+velocity+1, velocity+1);
+			}
+			else {
+				return karmaJump(array, index+velocity, velocity) ||
+						karmaJump(array, index+velocity-1, velocity-1) ||
+						karmaJump(array, index+velocity+1, velocity+1);				
+			}
+		}
+	}
+	
+	// 2. overlapping subproblems
+	// decide which one to use:
+	//  1) top down  - memorization
+	//  2) bottom up - tabulation
+	// needs to be a nice clean code easy to understand!
+	private static boolean karmaJumpDP(boolean[] array, int index, int velocity) {
+		return false;
+	}
+	
+	// love to be smart with this... how?
+	// can we do backtrack? maybe I am overthinking?
+	// but it seems like the problem sums up to find the existance of "true" with the velocity which can overshoot the
+	// array length n
+	
+	@Test
+	public void karmaJump() {
+		for (int i = 0; i < 500; ++i) {
+			naiveHashmap[i] = -1;
+		}
+		System.out.println("KARMA JUMP STARTED");
+		boolean[] notPassable = new boolean[]{true, true, false, true, false, true, false, false, false, true};
+		assertEquals(false, karmaJump(notPassable, 0, 1));
+		for (int i = 0; i < 500; ++i) {
+			naiveHashmap[i] = -1;
+		}		
+		System.out.println("KARMA JUMP2 STARTED");
+		boolean[] passable = new boolean[]{true, true, false, true, false, true, true, false, false, true, false};
+		assertEquals(true, karmaJump(passable, 0, 1));
+	}
+	
+	// again DP problem but can we be fancy?!
+	private static int fib(int n) {
+		if (n<=1) {
+			return n;
+		}
+		
+		return fib(n-2)+fib(n-1);
+	}
+	
+	@Test
+	// FIXME : move to Karma.java!
+	// TODO: move to Karma.java!
+	public void karmaEvenFibonacci() {
+		// given n return only sum of even Fibonacci
+		
+		// regular Fibonacci
+		int prev1 = 1;
+		int prev2 = 0;
+		int current = 0;
+
+		int n = 10;
+		int totalSum = 0;
+		
+		//for (int i = 2; i < n+1; ++i) {
+		while (totalSum <= n) {
+			current = prev1+prev2;
+			
+			if (current%2 == 0) {
+				totalSum += current;
+			}
+
+			if ((totalSum + current) > n) {
+				break;
+			}
+			
+			prev2 = prev1;
+			prev1 = current;
+		}
+		System.out.println("current " + current + " vs " + fib(10));
+		System.out.println("even fibonacci up to " + n + " = " + totalSum);
+	}
+	
+	@Test
+	public void test12345() {
+//		Write a program that gives count of common characters presented
+		//in an array of strings..(or array of character arrays) 
+//
+//		For eg.. for the following input strings.. 
+//
+//		aghkafgklt 
+//		dfghako 
+//		qwemnaarkf 
+//
+//		The output should be 3. because the characters a, f and k are present in all 3 strings. 
+//
+//		Note: The input strings contains only lower case alphabets
+		// would hash help? O(n) what if we cann't use hash?
+		// would sorting help? O(nlogn)(and the other two mlogm and ologo) + O(m+n+o) == O(nlogn)?? 
+		// 
+		// corner cases : 1) any of three arrays is empty
+		//                2) duplicated chars.
+		//                   so it should be
+		//                   for (...) {
+		//                        if (map.contains(char))
+		//                        	continue;
+		//                        else
+		//                          map.put(char, 1);
+		//                   }
+		// what about the next loop?
+		//                   for( ...) {
+		//                      if (map.contains(char))
+		//                          map.put(char, 2)
+		//                      else
+		//                          continue...
+		String s1 = "aghkafgklt";
+		String s2 = "dfghako";
+		String s3 = "qwemnaarkf";
+		
+		// optimization : i-97 will give us only alphabet range (0-27) whatever.
+		int[] map = new int[128];
+		for (int i = 0; i < 128; ++i) {
+			map[i] = -1;
+		}
+
+		for (Character c:s1.toCharArray()) {
+			map[c.charValue()] = 1;
+		}
+		
+		for (Character c:s2.toCharArray()) {
+			if (map[c.charValue()] == 1)
+				map[c.charValue()] = 2;
+		}
+		
+		for (Character c:s3.toCharArray()) {
+			if (map[c.charValue()] == 2)
+				map[c.charValue()] = 3;
+		}
+		
+		for (int i = 0; i < 128; ++i) {
+			if (map[i] == 3) {
+				char c = (char) i;
+				System.out.print(c + " ");
+			}
+		}
+	
+		System.out.println();
+	}
+	
+	@Test
+	public void findPermutation() {
+		// Given a string array ex: [1, 2, 3], find the permutation in best time
+		// corner case : duplication
+		// let's first go with the
+		// for (idx < length, ++idex) {
+		//    swap(idx, length-1)
+		//    permutation(idx+1)
+		//    swap(idx, length-1)
+		// }
+	}
+	
+	@Test
+	public void asdf() {
+		/* This class will be given a list of words (such as might be tokenized
+		 * from a paragraph of text), and will provide a method that takes two
+		 * words and returns the shortest distance (in words) between those two
+		 * words in the provided text. 
+		 * Example:
+		 *   WordDistanceFinder finder = new WordDistanceFinder(Arrays.asList("the", "quick", "brown", "fox", "quick"));
+		 *   assert(finder.distance("fox","the") == 3);
+		 *   assert(finder.distance("quick", "fox") == 1);
+		 */
+		
+		// cool...... naive solution :
+		// HashMap of String to list<Integers>.. or maybe TreeMap or something, just have it automatically sorted
+		// FIXME : look for java container that does this, otherwise I will be in trouble!!
+		// given two words I end up two lists.
+		// given that those two are sorted it sums up to find minimum distance between two list in linear time(maybe)
+		// (see if we can do it in logn)
+		// preprocessing : check the size, if one of them is 1 then easy, just do logn search in the other array and done
+		// preprocessing : compare the biggest vs the smallest in two and determine if they're overlapping
+		//                 otherwise that will be the smallest distance
+		// http://www.geeksforgeeks.org/find-the-minimum-distance-between-two-numbers/
+		// compare as we go
+		// say a = {2,3,4} b = {7,8,9}
+		//
+		// while (i < a.size && j < b.size) {
+		//   if (abs(a[i]-b[j]) < min) { min = abs(a[i]-b[j]); }
+		//   if (a[i] < b[j])
+		//     ++i;
+		//   else
+		//     ++j;
+		// }
+		//
+		// we should have minimum available here
+		// O(l1+l2) where l1 = a.length and l2 = b.length
+		// therefore, total complexity = 
+		// 1. build  : O(nlogn) where n is # of words because of the treemap(to maintain the sorted order) in the worst case
+		// 2. lookup : O(n) in the worst case, let's see why.
+		//    {"a","a","b","b","b","b","b","b"}
+		//  {2,7,8} {4,5,6}
+		// can we do in logn please...... not sure
+		//
+		
+	}
+	
+	@Test
+	public void findCommonAncestor() {
+		
+	}
+//		public interface FirstCommonAncestor { 
+
+			/** 
+			* Given two nodes of a tree, 
+			* method should return the deepest common ancestor of those nodes. 
+			* 
+			* A 
+			* / \ 
+			* B C 
+			* / \ \ 
+			* D E M 
+			* / \ 
+			* G F 
+			* 
+			* commonAncestor(D, F) = B 
+			* commonAncestor(C, G) = A 
+			*/ 
+
+//			public Node commonAncestor(Node nodeOne, Node nodeTwo) 
+//			{ 
+//
+//			} 
+//			} 
+//
+//			class Node { 
+//
+//			final Node parent; 
+//			final Node left; 
+//			final Node right; 
+//
+//
+//			public Node(Node parent, Node left, Node right, data) { 
+//			this.parent = parent; 
+//			this.left = left; 
+//			this.right = right; 
+//			this.data = data 
+//			} 
+//
+//			boolean isRoot() { 
+//			return parent == null; 
+//			} 
+//			}
+			
+			
+			/*
+			 * 
+TreeNode LowestCommonAncestorLoop(TreeNode currentNode, int Node1Value, int Node2Value)
+{
+    while (currentNode != null)
+    {                
+        // Move to the left subtree if the given values are less than current node's value.
+        if (Node1Value < currentNode.NodeValue && Node2Value < currentNode.NodeValue)
+        {
+            currentNode = currentNode.LeftNode;
+        }
+        // Move to right subtree if the given values are greater than current node's value.
+        else if (Node1Value > currentNode.NodeValue && Node2Value > currentNode.NodeValue)
+        {
+            currentNode = currentNode.RightNode;
+        }
+        else
+        {
+            // We have found the common ancestor.
+            break;
+        }
+    }
+    return currentNode;
+}
+*/	
+	public int[] selfExcludingProduct(int[] a) {
+		int[] result = new int[a.length];
+		int prod = 1;
+		int numberOfZeros = 0;
+		for (int i = 0; i < a.length; ++i) {
+			if (a[i] == 0) {
+				++numberOfZeros;
+			}
+			else {
+				prod *= a[i];
+			}
+			
+			if (numberOfZeros >= 2) {
+				prod = 0;
+				break;
+			}
+		}
+
+		if (numberOfZeros == 1) {
+			for (int i = 0; i < a.length; ++i) {
+				if (a[i] == 0) {
+					result[i] = prod;
+				}
+			}			
+		}
+		else if (numberOfZeros >= 2) {
+			for (int i = 0; i < a.length; ++i) {
+				result[i] = 0;
+			}
+		}
+		else {
+			for (int i = 0; i < a.length; ++i) {
+				result[i] = prod/a[i];
+			}
+		}
+
+		return result;
+	}
+	
+	
+	@Test
+	public void testSelfExcludingProduct() {
+		/**
+		 * Implement a method which takes an integer array and returns an integer array (of equal size) in
+		 * which
+		 * 
+		 * each element is the product of every number
+		 * in the input array with the exception of the
+		 * number at that index.
+		 *
+		 * Example:
+		 *   [3, 1, 4, 2] => [8, 24, 6, 12]
+		 */
+		for (int i : selfExcludingProduct(new int[]{3,1,4,2}))
+			System.out.print(i + " ");
+		System.out.println();
+		
+		for (int i : selfExcludingProduct(new int[]{3,1,0,2}))
+			System.out.print(i + " ");
+		System.out.println();
+		
+		for (int i : selfExcludingProduct(new int[]{3,0,0,2}))
+			System.out.print(i + " ");
+		System.out.println();
+	}
+	
+	public static int myPow(int a, int b) {
+		
+		if (b == 0) {
+			return 1;
+		}
+		if (b == 1) {
+			return a;
+		}
+		
+		int tmp = myPow(a, b/2);
+		
+		if (b < 0) {
+			return 1/myPow(a, -b);
+		}
+		
+		if (b%2 == 1) {
+			return a*tmp*tmp;
+		}
+		else {
+			return tmp*tmp;
+		}
+	}
+	
+	@Test
+	public void powInLogN() {
+		myPow(2,5);
+		// ahha! There's a solution with bit shifting as well, didn't realize that!
+		
+	}
+	
+	private static void generate(ArrayList<Integer> items, ArrayList<Integer> result, int start, ArrayList<ArrayList<Integer>> totalResult) {
+		if (result.size() == items.size()) {
+			System.out.print("adding " + result.toString());	
+			totalResult.add(result);;  
+		}
+		
+		for (int i = start; i < items.size(); ++i) {
+			result.add(items.get(i));
+			generate(items, result, i+1, totalResult);
+			result.remove(result.size()-1);
+		}
+	}
+	
+	public ArrayList<ArrayList<Integer>> generate(ArrayList<Integer> items) {
+		ArrayList<ArrayList<Integer>> totalResult = new ArrayList<ArrayList<Integer>>();
+		generate(items, new ArrayList<Integer>(), 0, totalResult);
+		return totalResult;
+	}
+	
+	@Test
+	public void permutationTest() {
+//		public interface Permutations { 
+//
+//			/** 
+//			* Generate all permutations of given sequence of elements. 
+//			* Return a list of all distinct permutations. 
+//			* 
+//			* E.g. 
+//			* generate([1, 2, 3]) -> [1, 2, 3], [1, 3, 2], [2, 3, 1], [2, 1, 3], [3, 1, 2], [3, 2, 1] 
+//			*/ 
+//			vector<vector<int>> generate(vector<int> items); 
+//			}
+//		}
+		ArrayList<Integer> a = new ArrayList<Integer>();
+		a.add(1);a.add(2);a.add(3);
+		ArrayList<ArrayList<Integer>> returned = generate(a);
+		System.out.println("total result:");
+		System.out.println(returned.toString());
+	}
 }

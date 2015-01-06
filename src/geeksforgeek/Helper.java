@@ -117,6 +117,40 @@ public final class Helper {
 		}
 	}
 	
+	
+	public void levelOrder(BSTNode root) { 
+		Queue<BSTNode> q = new LinkedList<BSTNode>(); 
+
+		q.add(root); 
+		int curlevel = 1; 
+		int nextlevel = 0; 
+
+		while(!q.isEmpty()) { 
+
+			BSTNode v = q.poll(); 
+	
+			System.out.print(v.data + " "); 
+	
+			if(v.left != null) { 
+				q.add(v.left); 
+				++nextlevel; 
+			} 
+
+			if(v.right != null) { 
+				q.add(v.right); 
+				++nextlevel; 
+			} 
+
+			--curlevel;
+
+			if(curlevel == 0) { 
+				curlevel = nextlevel; 
+				nextlevel = 0; 
+				System.out.println(); 
+			}
+		} // while 
+	} 
+	
 	private static void toArray(BSTNode root, ArrayList<Integer> list) {
 		if (root == null) {
 			return;

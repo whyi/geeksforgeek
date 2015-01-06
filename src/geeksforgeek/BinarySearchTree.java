@@ -316,7 +316,7 @@ public class BinarySearchTree {
 		 *      1   4  7
 		 */
 		BSTNode root = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
-		Helper.printInLevelOrder(root);
+		Helper.levelOrder(root);
 		assertEquals(3, locateLowestCommonAncestor(root, 1, 5).data); // expects 3
 		assertEquals(3, locateLowestCommonAncestor(root, 1, 4).data); // expects 2
 		assertEquals(3, locateLowestCommonAncestor(root, 1, 3).data); // expects 6
@@ -842,19 +842,19 @@ public class BinarySearchTree {
 		ArrayList<Integer> serialized = serialize(root);
 		BSTNode deSerialized = deserialize(serialized, 0, 0, serialized.size()-1);
 		System.out.println("deserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		Helper.printInLevelOrder(deSerialized);
+		Helper.levelOrder(deSerialized);
 		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");
 		serialized.clear();
 		serialized = serialize(root);
 		index = 0;
 		BSTNode deSerializedOptimized = deserializeOptimized(serialized, serialized.get(0), Integer.MIN_VALUE, Integer.MAX_VALUE);
 		System.out.println("deserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		Helper.printInLevelOrder(deSerializedOptimized);
+		Helper.levelOrder(deSerializedOptimized);
 		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");		
 		
 		BSTNode deSerializedOptimizedUsingStack = deserializeUsingStack(serialized);
 		System.out.println("deserialized using stack!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		Helper.printInLevelOrder(deSerializedOptimizedUsingStack);
+		Helper.levelOrder(deSerializedOptimizedUsingStack);
 		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");		
 	}
 }
