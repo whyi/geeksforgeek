@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -770,112 +771,597 @@ TreeNode LowestCommonAncestorLoop(TreeNode currentNode, int Node1Value, int Node
 		System.out.println(returned.toString());
 	}
 	
-	/* In "the 100 game," two players take turns adding, to a running 
-	total, any integer from 1..10. The player who first causes the running 
-	total to reach or exceed 100 wins.
-	What if we change the game so that players cannot re-use integers? 
-	For example, if two players might take turns drawing from a common pool of numbers
-	of 1..15 without replacement until they reach a total >= 100. This problem is 
-	to write a program that determines which player would win with ideal play.
-
-	Write a procedure, "Boolean canIWin(int maxChoosableInteger, int desiredTotal)",
-	which returns true if the first player to move can force a win with optimal play.
-
-	Your priority should be programmer efficiency; don't focus on minimizing
-	either space or time complexity.
-	*/
-
-	private Boolean yourPlay() {
-		return true;
+	public static String palindrome(String s) {
+		final int n = s.length();
+		boolean[][] lookup = new boolean[n][n];
+		for (int i = 0; i < n; ++i) {
+			lookup[i] = new boolean[n];
+			lookup[i][i] = true;
+		}
+		
+		int startIndex = 0;
+		int maxLength = 1;
+		
+		// 2 chars case
+		for (int i = 0; i < n-1; ++i) {
+			if (s.charAt(i) == s.charAt(i+1)) {
+				lookup[i][i+1] = true;
+				startIndex = i;
+				maxLength = 2;
+			}
+		}
+		
+		// > 3 chars
+		for (int k = 3; k <= n; ++k) {
+			for (int i = 0; i < n-k-1; ++i) {
+				int j = i+k-1;
+				if (lookup[i+1][j-1] == true && s.charAt(i) == s.charAt(j)) {
+					lookup[i][j] = true;
+					maxLength = k;
+					startIndex = i;
+				}
+			}
+		}
+		return s.substring(startIndex, startIndex+maxLength);
 	}
 	
-	private Boolean canIWin(boolean[] choices, int remainingTotal) {
-		if (remainingTotal <= 0) {
-			return false;
+	public static int lis(int[] arr, int n) {
+		if (n == 1) {
+			return 1;
+		}
+		
+		int result = 1;
+		int maxSoFar = 1;
+		for (int i = 1; i < n; ++i) {
+			result = lis(arr, i);
+			if (arr[i-1] < arr[n-1]) {
+				++result;
+			}
+			maxSoFar = Math.max(result, maxSoFar);
+		}
+		return maxSoFar;
+	}
+	
+	public static int lis(int[] arr) {
+		int[] l = new int[arr.length];
+		for (int i = 0; i < arr.length; ++i) {
+			l[i] = 1;
+		}
+		
+		for (int i = 1; i < arr.length; ++i) {
+			for (int j = 0; j < i; ++j) {
+				if (arr[i] > arr[j] && l[i] < l[j]+1) {
+					l[i] = l[j]+1;
+				}
+			}
+		}
+		
+		Integer max = Integer.MIN_VALUE;
+		for (int i = 0; i < l.length; ++i) {
+			if (l[i] > max) {
+				max = l[i];
+			}
+		}
+		return max;
+	}
+	
+	@Test
+	public void lisTest() {
+		int[] list = new int[]{ 10, 22, 9, 33, 21, 50, 41, 60 };
+		System.out.println("lis1 : " + lis(list, list.length));
+		System.out.println("lis2 : " + lis(list));
+	}
+	
+	@Test
+	public void palindrome() {
+		String s = "forgeeksskeegfor";
+		System.out.println("palindrome : " + palindrome(s));
+		final int n = s.length();
+		boolean[][] lookup = new boolean[n][n];
+		
+		for (int i = 0; i < n; ++i) {
+			lookup[i] = new boolean[n];
+			for (int j = 0; j < n; ++j) {
+				lookup[i][j] = false;
+			}
+			// a character itself is always a palindrome
+			lookup[i][i] = true;
 		}
 
-		boolean result = false;
+		int start = 0;
+		int maxLength = 0;
+		// special case when length is 2
+		for (int i = 1; i < n-1; ++i) {
+			if (s.charAt(i) == s.charAt(i+1)) {
+				lookup[i][i+1] = true;
+				start = i;
+				maxLength = 2;
+			}
+		}
 
-		for (int i = 0; i < choices.length; ++i) {
-			if (choices[i]) {
-				choices[i] = false;
-				
-				int currentTotal = remainingTotal-i-1;
-				if (currentTotal == 0) {
-					return true;
-				}
-				
-				// the other player
-				boolean cur = true;
-				for (int j = 0; j < choices.length; ++j) {
-					if (choices[i]) {
-						choices[i] = false;
-						cur = canIWin(choices, remainingTotal - j - i);
-						choices[i] = true;
+		// fix the starting index		
+		for (int k = 3; k <= n; ++k) {
+			for (int i = 0; i < n-k+1; ++i) {
+				// j is at the end of the substring
+				int j = i+k-1;
+				if (lookup[i+1][j-1] &&	s.charAt(i) == s.charAt(j)) {
+					lookup[i][j] = true;
+					if (k > maxLength) {
+						maxLength = k;
+						start = i;
 					}
 				}
-				result = result || cur;
-				choices[i] = true;
 			}
+		}
+		System.out.println("palindrome @ " + start + " with " + maxLength + " chars " + s.substring(start, start+maxLength));
+	}
+	
+	@Test
+	public void kadaneTest() {
+		System.out.println("------------KAdane----------------");
+		int[] arr = {-2, -3, 4, -1, -2, 1, 5, -3};
+		int maxSoFar = arr[0];
+		int currentMax = 0;
+		for (int i = 1; i< arr.length; ++i) {
+			currentMax = Math.max(currentMax, currentMax+arr[i]);
+			maxSoFar = Math.max(currentMax, maxSoFar);
+		}
+		System.out.println("------------KAdane-----end-------- " + maxSoFar);
+	}
+	
+	// can be as lazy as calling isIsomorphic(s1,s2) && isIsomorphic(s2, s1)
+	private boolean isIsomorphic(String s1, String s2) {
+		boolean result = true;
+		int[] map = new int[256];
+		for (int i = 0; i < 256; ++i) {
+			map[i] = -1;
+		}
+		for (int i = 0; i < s1.length(); ++i) {
+			final int key = s1.charAt(i)-'a';
+			final int value = s2.charAt(i)-'a';
+			if (map[key] == -1)
+				map[key] = value;
+			else if (map[key] != value) {
+				result = false;
+				break;
+			}
+			
 		}
 		return result;
 	}
 	
-	public Boolean canIWin(int maxChoosableInteger, int desiredTotal) {
-		// 	Implementation here. Write yours
-		
-		boolean[] choices = new boolean[maxChoosableInteger];
-		for (int i = 0; i < maxChoosableInteger; ++i) {
-			choices[i] = true;
+	private static String encodeAsFirstSeenIndices(String s1) {
+		int[] indices = new int[26];
+		for (int i = 0; i < 26; ++i) {
+			indices[i] = -1;
 		}
-		boolean myTurn = true;
-		return canIWin(choices, desiredTotal);
+
+		for (int i = 0; i < s1.length(); ++i) {
+			final int key = s1.charAt(i)-'a';
+			if (indices[key] == -1)
+				indices[key] = i;
+		}
+		
+		String encodedS1 = "";
+		for (int i = 0; i < s1.length(); ++i) {
+			final int key = s1.charAt(i)-'a';
+			encodedS1 += indices[key];
+		}
+		return encodedS1;
+	}
+	
+	private boolean isIsomorphicOptimized(String s1, String s2) {
+		return encodeAsFirstSeenIndices(s1) == encodeAsFirstSeenIndices(s1);
 	}
 	
 	@Test
-	public void canIWin() {
-		System.out.println("can I win? " + canIWin(6, 12));
-		System.out.println("false||true : " + (false||true));
+	public void isomorphic() {
+		/*Given two (dictionary) words as Strings, determine if they are isomorphic. Two words are called isomorphic 
+if the letters in one word can be remapped to get the second word. Remapping a letter means replacing all 
+occurrences of it with another letter while the ordering of the letters remains unchanged. No two letters 
+may map to the same letter, but a letter may map to itself. 
+
+Example: 
+given "foo", "app"; returns true 
+we can map 'f' -> 'a' and 'o' -> 'p' 
+given "bar", "foo"; returns false 
+we can't map both 'a' and 'r' to 'o' 
+
+given "turtle", "tletur"; returns true 
+we can map 't' -> 't', 'u' -> 'l', 'r' -> 'e', 'l' -> 'u', 'e' -'r' 
+
+given "ab", "ca"; returns true 
+we can map 'a' -> 'c', 'b'
+		 * 
+		 */
+		
+		//assertEquals(true, isIsomorphic("foo", "app"));
+		assertEquals(false, isIsomorphicOptimized("bar", "foo"));
+		//assertEquals(false, isIsomorphic("boo", "bar"));
+		//assertEquals(true, isIsomorphic("turtle", "tletur"));
 	}
 	
 	@Test
-	// http://www.careercup.com/question?id=6266917077647360
-	public void convertBinaryTree() {
-		BSTNode root = new BSTNode(1);
-		root.left = new BSTNode(2);
-		root.right = new BSTNode(3);
-		root.left.left = new BSTNode(4);
-		root.left.right = new BSTNode(5);
-		root.left.left.left = new BSTNode(6);
-		root.left.left.right = new BSTNode(7);
+	public void minimumDistanceInTwoSortedArray() {
+/*
+ * You have two arrays of integers, where the integers do not repeat and the two arrays have no common integers. 
+   Let x be any integer in the first array, y any integer in the second. Find min(Abs(x-y)).
+   That is, find the smallest difference between any of the integers in the two arrays. 
+   Assumptions: Assume both arrays are sorted in ascending order.
+ */
+		// case 1. their intervals doesn't overlap such as [1, 2] and [3, 4]
+		//         simply return a1[max]-a2[min]
+		//         something like
+//		if (a1[0] < a2[0] && a1[a1.length-1] < a2[0]) {
+//			return a2[0] - a1[a1.length-1];
+//		}
+//		
+//		if (a2[0] < a1[0] && a2[a2.length-1] < a1[0]) {
+//			return a1[0] - a2[a2.length-1];
+//		}
 		
-		BSTNode node = root;
-		Stack<BSTNode> stack = new Stack<BSTNode>();
-		while (node != null) {
-			stack.push(node);
-			node = node.left;
+		// case 2. their intervals indeed overlaps. such as [1, 2, 4, 5] [3, 7, 8]
+		//
+		// pick the intersection point
+		// nvm
+		// it's O(n) anyway
+		
+		int[] a1 = new int[]{1,2,4,5};
+		int[] a2 = new int[]{3,7,8};
+		int i = 0;
+		int j = 0;
+		int minSoFar = Integer.MAX_VALUE;
+		while (i < a1.length && j < a2.length) {
+			if (a1[i] <= a2[j]) {
+				minSoFar = Math.min(minSoFar, a2[j]-a1[i]);
+				++i;
+			}
+			else {
+				minSoFar = Math.min(minSoFar, a1[i]-a2[j]);
+				++j;
+			}
+		}
+		System.out.println("minSoFar : " + minSoFar);
+	}
+	
+	private static String reverse(char[] s,int start,int end) {
+		if(start >= end)
+			return String.valueOf(s);
+		
+		char temp = s[start];
+		s[start] = s[end];
+		s[end] = temp;
+		return reverse(s,start+1,end-1);
+	}
+	
+	@Test
+	public void stringReversal() {
+		String s = "abcde";
+		char[] arr = s.toCharArray();
+		System.out.println("reversed : " + reverse(arr, 0, arr.length-1));
+	}
+	
+	private static Integer binarySearch(int[] arr, int left, int right, int n) {
+		if (left > right) {
+			return null;
 		}
 		
-		BSTNode prev = null;
-		while (!stack.isEmpty()) {
-			node = stack.pop();
-			// this is the root
-			if (node.left == null && node.right == null) {
-				System.out.println("top : " + node.data);
-				root = node;
-			}
-			
-			if (node.right != null) {
-				prev.left = node.right;
-				prev.right = node;
-				node.right = null;
-			}
-			prev = node;
+		final int midIdx = (left+right)/2;
+		if (arr[midIdx] == n) {
+			return midIdx;
 		}
-		node.left = null;
-		node.right = null;
-		System.out.println("flipped!!!!!! " + root.data);
-		Helper.levelOrder(root);
-		System.out.println("\nflipped!!!!!! done" + root.data);
+		
+		if (arr[midIdx] > n) {
+			return binarySearch(arr, left, midIdx-1, n);
+		}
+		else {
+			return binarySearch(arr, midIdx+1, right, n);
+		}
+	}
+	
+	private static int findLeft(int[] arr, int left, int right, int n) {
+		final int midIdx = (left+right)/2;
+		
+		if (left > right || arr[midIdx] < n) {
+			return midIdx+1;
+		}
+		
+		if (arr[midIdx] == n) {
+			return findLeft(arr, left, midIdx-1, n);
+		}
+		
+		return left;
+	}
+
+	private static int findRight(int[] arr, int left, int right, int n) {
+		final int midIdx = (left+right)/2;
+		
+		if (left > right || arr[midIdx] > n) {
+			return midIdx-1;
+		}
+		
+		if (arr[midIdx] == n) {
+			return findRight(arr, midIdx, right, n);
+		}
+		return right;
+	}
+	
+	private static void computeRange(int[] arr, int n) {
+		Integer index = binarySearch(arr, 0, arr.length, n);
+		if (index != null) {
+			Integer left = findLeft(arr, 0, index, n);
+			Integer right = findRight(arr, index, arr.length-1, n);
+			System.out.println("range for " + n + " is {" + left + ", " + right + "}");
+		}
+		else {
+			System.out.println("not found");
+		}
+	}
+	
+	@Test
+	public void testComputeRange() {
+		computeRange(new int[]{0,0,2,3,3,3,3,4,7,7,9}, 3);
+		/*
+		 * Given a sorted integer array and a number, find the start and end indexes of the number in the array. 
+
+Ex1: Array = {0,0,2,3,3,3,3,4,7,7,9} and Number = 3 --> Output = {3,6} 
+Ex2: Array = {0,0,2,3,3,3,3,4,7,7,9} and Number = 5 --> Output = {-1,-1} 
+
+Complexity should be less than O(n)
+
+- bvinay84 on July 11, 2013 in United States Report Dup
+		 */
+		
+		// 1. binary search for the number. if not found return the -1 array
+		// 2. if found, recursively,
+		//           findLow -> will search for  left...pivot-1
+		//           findHigh -> will search for pivot+1...right
+		// worst case logn (either not found or the array is full of the given number)
+	}
+	
+	@Test
+	public void testLongestIncreasingSubsequenceSum() {
+		// variation of LIS
+		int[] list = new int[]{ 10, 22, 9, 33, 21, 50, 41, 60 };
+		int n = list.length;
+		int[] liss = new int[n];
+		for (int i = 0; i < n; ++i) {
+			liss[i] = list[i];
+		}
+		
+		for (int i = 1; i < n; ++i) {
+			for (int j = 0; j < i; ++j) {
+				if (list[i] > list[j] && liss[i] < liss[j] + list[i]) {
+					liss[i] = liss[j] + list[i];
+				}
+			}
+		}
+		int max = Integer.MIN_VALUE;
+		for (int i: liss) {
+			if (i > max) {
+				max = i;
+			}
+		}
+		System.out.println("longest increasing sum " + max);
+	}
+	// moore's algorithm to find the majority (more than half of the time)
+	@Test
+	public void MooresAlgorithm() {
+		int[] arr = {2,4,5,3,6,2,7,4,7,6,3,3,3,5,43,2,3,4,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,3,3,3,2,22,2,2,2,2,2,2,2};
+		
+		int candidate = 0;
+		int count = 0;
+		for (int i:arr) {
+			if (count == 0) {
+				candidate = i;
+				++count;
+			}
+			if (i != candidate) {
+				--count;
+			}
+			if (i == candidate) {
+				++count;
+			}
+		}
+		
+		System.out.println("=================>candidate : " + candidate);
+	}
+	
+	@Test
+	public void binarySearchInRotatedArray() {
+		// logic
+		// do regular binary search left, right
+		// if mid is the match, return
+		// otherwise compare a[mid] to a[left]
+		// .......
+		// http://www.careercup.com/question?id=15489754
+		// get the following done when get home.
+	/*
+	 * 	public static int findElementInRotatedSorted(int[] a, int start, int end, int key)
+	{
+		if (end < start)
+		{
+			return -1;
+		}
+
+		int middle = (start + end) / 2;
+		if (a[middle] == key)
+		{
+			return middle;
+		}
+
+		if (a[start] <= a[middle])
+		{
+			if (key < a[middle] && key >= a[start])
+			{
+				return findElementInRotatedSorted(a, start, middle - 1, key);
+			}
+			else
+			{
+				return findElementInRotatedSorted(a, middle + 1, end, key);
+			}
+		}
+		else
+		{
+			if (a[middle] < key && key <= a[end])
+			{
+				return findElementInRotatedSorted(a, middle + 1, end, key);
+			}
+			else
+			{
+				return findElementInRotatedSorted(a, start, middle - 1, key);
+			}
+		}
+	}
+}
+	 */
+	}
+	
+	public static class Node {
+		public Node left;
+		public Node right;
+		public int data;
+		public Node(int data) {
+			this.data = data;
+		}
+	}
+	
+	private static Node sortedArrayToBST(int[] arr, int left, int right) {
+		if (left > right) {
+			return null;
+		}
+		
+		final int mid = (left+right)/2;
+		Node node = new Node(arr[mid]);
+		node.left = sortedArrayToBST(arr, left, mid-1);
+		node.right = sortedArrayToBST(arr, mid+1, right);
+		return node;
+	}
+	
+	@Test
+	public void sortedArrayToBST() {
+		int[] arr = {1,2,3,4,5};
+		Node root = sortedArrayToBST(arr, 0, arr.length-1);
+		// yeah., so what?
+		
+	}
+	
+	@Test
+	public void findCommonSet() {
+		/*
+		 * There are 2 sorted sets.Find the common elements of those sets 
+			e.g. 
+			A={1,2,3,4,5,6} 
+			B={5,6,7,8,9} 
+			o/p C={5,6} 
+
+			Complexity should ne 0(n+m) where n and m is the size of the first and second set respectively 
+
+			Which data structure should be used to store the output
+		 */
+		// http://www.careercup.com/question?id=15532665
+		
+		
+	}
+	
+	private static boolean isOperator(char c) {
+		if (c == '+' || c == '/' || c == '-' || c == '*')
+			return true;
+
+		return false;
+	}
+	
+	private static Integer compute(Integer operand1, Integer operand2, char operator) throws Exception {
+		switch(operator) {
+		case '+':
+			return operand1+operand2;
+		case '-':
+			return operand1-operand2;
+		case '/':
+			return operand1/operand2;
+		case '*':
+			return operand1*operand2;
+		default:
+			throw new RuntimeException("Illegal operation");
+		}
+	}
+
+	private static int evaluate(String s) throws Exception {
+		Stack<Integer> stack = new Stack<Integer>();
+		char[] arr = s.toCharArray();
+		for (int i = 0; i < arr.length; ++i) {
+			final char c = arr[i];
+			if (isOperator(c)) {
+				Integer operand1 = stack.pop();
+				Integer operand2 = stack.pop();
+				System.out.println("computing " + operand1 + c + operand2);
+				stack.push(compute(operand1, operand2, c));
+			}
+			else {
+				stack.push(c-'0');
+			}
+		}
+		
+		return stack.pop();
+	}
+	
+	// Question : what about prefix?
+	// Question : what about in order? >>>>>>>>>>> nonsense
+	@Test
+	public void evaluatePostFix() throws Exception {
+		String s = "345+*612+/-";
+		assertEquals(-27, evaluate(s));
+		assertEquals(7, evaluate("25+"));
+		assertEquals(56, evaluate("25+8*"));
+		assertEquals(2, evaluate("25+8*112/"));
+	}
+	
+	private static int findLogBase2Of(int n) {
+		int result = 0;
+		while (true) {
+			n = n>>1;
+			if (n <= 0)
+				break;
+			++result;
+		}
+		return result;
+	}
+
+	@Test
+	public void findLogBase2() {
+		assertEquals(0, findLogBase2Of(1));
+		assertEquals(1, findLogBase2Of(2));
+		assertEquals(1, findLogBase2Of(3));
+		assertEquals(2, findLogBase2Of(4));
+	}
+	
+	@Test
+	public void stringRepresentedBST() {
+		
+	}
+	
+	@Test
+	public void foo() {
+		/*Given a large document and a short pattern consisting of a few words (eg. W1 W2 W3),
+		 * find the shortest string that has all the words in any order
+		 * (for eg. W2 foo bar dog W1 cat W3 -- is a valid pattern)
+		 * 
+		 */
+		
+		/*
+		 * Find and store all the valid numbers in an array that are in the string including negative,
+		 * positive, hexadecimal, octal, binary?
+		 * For example string "abcd 0xa 11.12 123" has values 10, 11.12 , 123.
+		 * I would rephrase the question:
+		 * find all words(separated from other words through tabs or spaces) in the string that can be expressed
+		 * in the form of decimal number. After the words are obtained store their value in the array.
+		 * 
+		 */
+		
+		/* String sentence justification.. another DP */
+		// min(current # of line breaks, min(case when I select the next, case when I don't select the next)) not sure
+		// need to study!!
+		// Wordwrap @ https://www.readability.com/articles/y88eqwv3
+		// Can be done using Greedy but not optimal (only sub-optimal as Greedy suggest)
 	}
 }

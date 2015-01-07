@@ -119,7 +119,7 @@ public final class Helper {
 	
 	
 	public static void levelOrder(BSTNode root) { 
-		Queue<BSTNode> q = new LinkedList<BSTNode>(); 
+		Queue<BSTNode> q = (Queue<BSTNode>) new LinkedList(); 
 
 		q.add(root); 
 		int curlevel = 1; 
