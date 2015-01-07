@@ -289,10 +289,10 @@ public class BinarySearchTree {
 			return locateLowestCommonAncestor(node.left, n1, n2);
 		}
 		
-		//if (node.data > n1 && node.data < n2) {
+//		if (node.data > n1 && node.data < n2) {
 			return node;
-		//}
-		//return null;
+//		}
+//		return null;
 	}
 	
 	// TODO : 1. may wanna try the iterative solution
@@ -316,7 +316,7 @@ public class BinarySearchTree {
 		 *      1   4  7
 		 */
 		BSTNode root = arrayToBSTOptimized(new int[] {1,2,3,4,5,6,7,8,9,10});
-		Helper.levelOrder(root);
+		//Helper.levelOrder(root);
 		assertEquals(3, locateLowestCommonAncestor(root, 1, 5).data); // expects 3
 		assertEquals(3, locateLowestCommonAncestor(root, 1, 4).data); // expects 2
 		assertEquals(3, locateLowestCommonAncestor(root, 1, 3).data); // expects 6
@@ -753,14 +753,14 @@ public class BinarySearchTree {
 	}
 	
 	// naive, O(n^2)
-	private static BSTNode deserialize(ArrayList<Integer> serialized, int preIndex, int low, int high) {
-		if (preIndex >= serialized.size() || low > high) {
+	private static BSTNode deserialize(ArrayList<Integer> serialized, int index, int low, int high) {
+		if (index >= serialized.size() || low > high) {
 			return null;
 		}
 		
 		// 1st is alway the root
-		BSTNode root = new BSTNode(serialized.get(preIndex));
-		++preIndex;
+		BSTNode root = new BSTNode(serialized.get(index));
+		++index;
 		
 		if (low == high) {
 			return root;
@@ -774,8 +774,8 @@ public class BinarySearchTree {
 			}
 		}
 		
-		root.left = deserialize(serialized, preIndex, preIndex, highStart-1);
-		root.right = deserialize(serialized, preIndex, highStart, high);
+		root.left = deserialize(serialized, index, index, highStart-1);
+		root.right = deserialize(serialized, index, highStart, high);
 		return root;
 	}
 	
@@ -830,6 +830,48 @@ public class BinarySearchTree {
 		return root;
 	}
 	
+	// only works with marker serialized version....... FAIL
+	private static BSTNode deserializeTest(ArrayList<Integer> serialized, int index) {
+		if (index > serialized.size()-1) {
+			return null;
+		}
+		BSTNode root = new BSTNode(serialized.get(index));
+	    root = new BSTNode(serialized.get(index));
+	    root.left = deserializeTest(serialized, ++index);
+	    root.right = deserializeTest(serialized, ++index);
+	    
+	    return root;
+	}
+	
+	private static BSTNode deserializeTest2(ArrayList<Integer> serialized, int key, int min, int max) {
+		
+		if (index >= serialized.size()) {
+			return null;
+		}
+
+		BSTNode root = null;
+		
+		if (key > min && key < max) {
+			root = new BSTNode(key);
+			++index;
+			
+			if (index < serialized.size()) {
+				root.left = deserializeOptimized(serialized, serialized.get(index), min, key);
+				root.right = deserializeOptimized(serialized, serialized.get(index), key, max);
+			}
+		}
+
+		return root;
+	}
+	
+	public static void reverse1(String s, int i) {
+		if (i < 0) {
+			return;
+		}		
+		reverse1(s, i-1);
+		System.out.print("reverse : " + s.charAt(i));
+	}
+	
 	@Test
 	public void serializeDeserialize() {
 		BSTNode root = new BSTNode(10);
@@ -838,7 +880,7 @@ public class BinarySearchTree {
 		root.left.right = new BSTNode(7);
 		root.right = new BSTNode(40);
 		root.right.right = new BSTNode(50);
-		
+
 		ArrayList<Integer> serialized = serialize(root);
 		BSTNode deSerialized = deserialize(serialized, 0, 0, serialized.size()-1);
 		System.out.println("deserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -856,5 +898,14 @@ public class BinarySearchTree {
 		System.out.println("deserialized using stack!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		Helper.levelOrder(deSerializedOptimizedUsingStack);
 		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");		
+		
+		index = 0;
+		BSTNode deSerializedTest = deserializeTest2(serialized, serialized.get(0), Integer.MIN_VALUE, Integer.MAX_VALUE);
+		System.out.println("deSerializedTest");
+		Helper.levelOrder(deSerializedTest);
+		System.out.println("\ndeserialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!! done");
+		
+		String s = "12345";
+		reverse1(s, s.length()-1);
 	}
 }

@@ -143,13 +143,13 @@ public class LinkedIn {
 	public void test1() {
 		alreadyPrinted.clear();
 		substrings("abc", new ArrayList<Character>(), 0);
-		System.out.println("# of substrings : " + alreadyPrinted.size());
+		//System.out.println("# of substrings : " + alreadyPrinted.size());
 		alreadyPrinted.clear();
 		substrings("aabc", new ArrayList<Character>(), 0);
-		System.out.println("# of substrings : " + alreadyPrinted.size());
+		//System.out.println("# of substrings : " + alreadyPrinted.size());
 		alreadyPrinted.clear();
 		substrings("abcd", new ArrayList<Character>(), 0);
-		System.out.println("# of substrings : " + alreadyPrinted.size());		
+		//System.out.println("# of substrings : " + alreadyPrinted.size());		
 		
 		// this is duplicated.
 		
@@ -158,7 +158,7 @@ public class LinkedIn {
 		alreadyPrinted.clear();
 		substrings("abcdd", new ArrayList<Character>(), 0);
 		int actual = alreadyPrinted.size();
-		System.out.println("# of substrings 1dups : " + alreadyPrinted.size());
+		//System.out.println("# of substrings 1dups : " + alreadyPrinted.size());
 		assertEquals(expected, actual);
 		
 		expected = (int) Math.pow(2, 5);
@@ -166,7 +166,7 @@ public class LinkedIn {
 		alreadyPrinted.clear();
 		substrings("abddd", new ArrayList<Character>(), 0);
 		actual = alreadyPrinted.size();
-		System.out.println("# of substrings 2dups : " + alreadyPrinted.size());
+		//System.out.println("# of substrings 2dups : " + alreadyPrinted.size());
 		assertEquals(expected, actual);		
 		
 		
@@ -372,13 +372,13 @@ For example: "-3.3425","80.0", both of them are number
 		for (int i = 0; i < 500; ++i) {
 			naiveHashmap[i] = -1;
 		}
-		System.out.println("KARMA JUMP STARTED");
+		//System.out.println("KARMA JUMP STARTED");
 		boolean[] notPassable = new boolean[]{true, true, false, true, false, true, false, false, false, true};
 		assertEquals(false, karmaJump(notPassable, 0, 1));
 		for (int i = 0; i < 500; ++i) {
 			naiveHashmap[i] = -1;
 		}		
-		System.out.println("KARMA JUMP2 STARTED");
+		//System.out.println("KARMA JUMP2 STARTED");
 		boolean[] passable = new boolean[]{true, true, false, true, false, true, true, false, false, true, false};
 		assertEquals(true, karmaJump(passable, 0, 1));
 		
@@ -898,7 +898,7 @@ TreeNode LowestCommonAncestorLoop(TreeNode currentNode, int Node1Value, int Node
 	
 	@Test
 	public void kadaneTest() {
-		System.out.println("------------KAdane----------------");
+	//	System.out.println("------------KAdane----------------");
 		int[] arr = {-2, -3, 4, -1, -2, 1, 5, -3};
 		int maxSoFar = arr[0];
 		int currentMax = 0;
@@ -906,7 +906,7 @@ TreeNode LowestCommonAncestorLoop(TreeNode currentNode, int Node1Value, int Node
 			currentMax = Math.max(currentMax, currentMax+arr[i]);
 			maxSoFar = Math.max(currentMax, maxSoFar);
 		}
-		System.out.println("------------KAdane-----end-------- " + maxSoFar);
+//		System.out.println("------------KAdane-----end-------- " + maxSoFar);
 	}
 	
 	// can be as lazy as calling isIsomorphic(s1,s2) && isIsomorphic(s2, s1)
@@ -1294,7 +1294,7 @@ Complexity should be less than O(n)
 			if (isOperator(c)) {
 				Integer operand1 = stack.pop();
 				Integer operand2 = stack.pop();
-				System.out.println("computing " + operand1 + c + operand2);
+				//System.out.println("computing " + operand1 + c + operand2);
 				stack.push(compute(operand1, operand2, c));
 			}
 			else {
@@ -1363,5 +1363,36 @@ Complexity should be less than O(n)
 		// need to study!!
 		// Wordwrap @ https://www.readability.com/articles/y88eqwv3
 		// Can be done using Greedy but not optimal (only sub-optimal as Greedy suggest)
+	}
+	
+	private static int makeTriangle(int[] arr) {
+		final int n = arr.length;
+		int count = 0;
+		for (int i = 0; i < n-2; ++i) {
+			int k = i+2;
+			for (int j = i+1; j < n; ++j) {
+				while (k<n && arr[i] + arr[j] > arr[k]) {
+					++k;
+				}
+				count += k-j-1;
+			}
+		}
+		return count;
+	}
+	
+	@Test
+	public void testTriangle() {
+		int[] arr = new int[] {10, 21, 22, 100, 101, 200, 300};
+		System.out.println("triangles: " + makeTriangle(arr));
+		
+		int[] arr2 = new int[]{1, 2, -4, 1, 3, -2, 3, -1};
+		
+		int maxSoFar = arr2[0];
+		int max = arr2[0];
+		for (int i = 1; i < arr2.length;++i) {
+			maxSoFar = Math.max(0, maxSoFar+arr2[i]);
+			max = Math.max(maxSoFar, max);
+		}
+		System.out.println("max: " + max);
 	}
 }
