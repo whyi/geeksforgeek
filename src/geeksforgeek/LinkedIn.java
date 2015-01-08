@@ -1395,4 +1395,17 @@ Complexity should be less than O(n)
 		}
 		System.out.println("max: " + max);
 	}
+	
+	@Test
+	public void lisTest123() {
+		//int[] arr = {}
+		System.out.println("subString!!!!!!!");
+		String s = "ABABC";
+		int subSequenceLength = 2;
+		for (int i = 0; i < s.length()-subSequenceLength+1; ++i) {
+			int j = i + subSequenceLength;
+			System.out.println("subString " + i + " , " + j + " : " + s.substring(i,j));
+
+		}
+	}
 }
