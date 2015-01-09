@@ -2,6 +2,8 @@ package geeksforgeek;
 
 import static org.junit.Assert.*;
 
+import java.util.Stack;
+
 import org.junit.Test;
 
 public class AmazonSet1 {
@@ -58,9 +60,45 @@ public class AmazonSet1 {
 		}
 	}
 	
+	private static boolean isPalindrome(char[] chars) {
+		Stack<Character> stack = new Stack<Character>();
+		
+		int size = 0;
+		for (char c:chars) {
+			stack.push(c);
+			++size;
+		}
+		
+		size = size/2;
+		int i = 0;
+		while (i != size) {
+			if (chars[i] == stack.pop()) {
+				++i;
+			}
+			else {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	@Test
 	public void isPalindrome() {
 		// Check if a character link list is palindrome or not.
+		// suppose the following is linked list
+		char[] truePalindrome = "abcdcba".toCharArray();
+		char[] falsePalindrome = "abc213ba".toCharArray();
+		
+		assertEquals(true, isPalindrome(truePalindrome));
+		assertEquals(false, isPalindrome(falsePalindrome));
+	}
+	
+	
+	@Test
+	public void test123() {
+		//  A sorted array has been rotated r times to the left. Find r in least possible time.
+		// naive O(n)
+		// can be done in logn imo
 	}
 
 }
