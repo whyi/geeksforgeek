@@ -92,13 +92,72 @@ public class AmazonSet1 {
 		assertEquals(true, isPalindrome(truePalindrome));
 		assertEquals(false, isPalindrome(falsePalindrome));
 	}
+
+	public static void printInt(int n)	{
+		if (n < 0) {
+			return;
+		}
+		
+		System.out.print(n);
+	}
+
+	// Assuming the array is sorted.
+	// Therefore the pivot index is the index where the next index is smaller than it.
+	private static int findPivotFrom(int[] array, int left, int right) {
+		final int mid = (left+right)/2;
+		if (array[mid] > array[mid+1]) {
+			return mid;
+		}
+		
+		if (array[mid] < array[left]) {
+			return findPivotFrom(array, left, mid-1);
+		}
+		else {
+			return findPivotFrom(array, mid+1, right);
+		}
+	}
 	
+	private static int binarySearch(int[] array, int left, int right, int value) {
+		final int mid = (left+right)/2;
+
+		if (array[mid] == value) {
+			return mid;
+		}
+
+		if (array[mid] < value) {
+			return binarySearch(array, mid+1, right, value);
+		}
+		else {
+			return binarySearch(array, 0, mid-1, value);
+		}
+	}
+	
+	private static int findNumber(int[] array, int pivot, int val) {
+		if (val == array[pivot]) {
+			return pivot;
+		}
+		
+		if (val < array[pivot]) {
+			// search in the right array
+			return binarySearch(array, pivot+1, array.length-1, val);
+		}
+		// search in the left array
+		return binarySearch(array, 0, pivot-1, val);
+	}
 	
 	@Test
-	public void test123() {
+	public void findInRotatedArray() {
 		//  A sorted array has been rotated r times to the left. Find r in least possible time.
 		// naive O(n)
 		// can be done in logn imo
+		
+		int[] arr = {4,5,1,2,3};
+		System.out.println("findPivotFrom : " + findPivotFrom(arr, 0, arr.length-1));
+		
+		final int pivot = findPivotFrom(arr, 0, arr.length-1);
+		// given pivot split into 2 havles;
+		// then search for each.
+		
+		System.out.println("findNumber : " + findNumber(arr, pivot, 2));
 	}
-
 }
