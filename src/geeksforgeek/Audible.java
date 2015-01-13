@@ -164,7 +164,30 @@ public class Audible {
 	    root.right.left.right = new Node(8);		
 		//System.out.println("result : " + computeLCA(root, 4, 5).data);
 		System.out.println("result : " + distanceBetweenTwoNodes(root, 4, 5));
-	    
+	}
+	
+	@Test
+	public void bubbleSort() {
+		int[] arr = {5,3,2,4,3,2,4,12,3,4,2,5,12,3,12,4,124,2,4,12,31,23,12,31,23};
+
+		while (true) {
+			boolean swapped = false;
+			for (int i = 1; i < arr.length; ++i) {
+				if (arr[i-1] > arr[i]) {
+					final int temp = arr[i];
+					arr[i] = arr[i-1];
+					arr[i-1] = temp;
+					swapped = true;
+				}
+			}
+			
+			if (swapped == false) {
+				break;
+			}
+		}
 		
+		for (int i : arr) {
+			System.out.print(i + " ");
+		}
 	}
 }
