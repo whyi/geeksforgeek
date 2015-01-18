@@ -165,11 +165,8 @@ public class Audible {
 		//System.out.println("result : " + computeLCA(root, 4, 5).data);
 		System.out.println("result : " + distanceBetweenTwoNodes(root, 4, 5));
 	}
-	
-	@Test
-	public void bubbleSort() {
-		int[] arr = {5,3,2,4,3,2,4,12,3,4,2,5,12,3,12,4,124,2,4,12,31,23,12,31,23};
 
+	private static int[] bubbleSort(int[] arr) {
 		while (true) {
 			boolean swapped = false;
 			for (int i = 1; i < arr.length; ++i) {
@@ -185,9 +182,89 @@ public class Audible {
 				break;
 			}
 		}
+		return arr;
+	}
+	
+	@Test
+	public void bubbleSort() {
+		int[] arr = {5,3,2,4,3,2,4,12,3,4,2,5,12,3,12,4,124,2,4,12,31,23,12,31,23};
+		bubbleSort(arr);
+	}
+	
+	@Test
+	// O(n*k)
+	public void findKthLargestOrSmallest() {
+		int[] arr = {5,4,3,2,1,0};
 		
-		for (int i : arr) {
+		// run bubble sort up to k time
+		final int k = 3;
+		int cnt = 0;
+		while (cnt <= k) {
+			for (int i = 1; i < arr.length; ++i) {
+				if (arr[i-1] > arr[i]) {
+					final int temp = arr[i];
+					arr[i] = arr[i-1];
+					arr[i-1] = temp;
+				}
+			}
+			++cnt;
+		}
+
+		System.out.println("test");
+		for (int i: arr) {
 			System.out.print(i + " ");
 		}
+		System.out.println();
+		System.out.println("findKthLargestOrSmallestUsingTempArray : " + findKthLargestOrSmallestUsingTempArray(new int[]{5,4,3,2,1,0}, k));
+		System.out.println("findKthLargestOrSmallestUsingSorting : " + findKthLargestOrSmallestUsingSorting(new int[]{5,4,3,2,1,0}, k));
+		ArrayList<Integer> arr1 = new ArrayList<Integer>();
+		arr1.add(5);arr1.add(4);arr1.add(3);arr1.add(2);arr1.add(1);arr1.add(0);
+		System.out.println("findViaQuickSelect : " + findViaQuickSelect(arr1, k, 0, arr1.size()-1));
 	}
+	
+	// not sure if I'm understanding this approach
+	public int findKthLargestOrSmallestUsingTempArray(int[] arr, int k) {
+		
+		return 0;
+	}
+	
+	public int findKthLargestOrSmallestUsingSorting(int[] arr, int k) {
+		ArrayList<Integer> al = new ArrayList<Integer>();
+		for (int i:arr) {
+			al.add(i);
+		}
+		Collections.sort(al);
+		return al.get(k-1);
+	}
+	
+	public int findViaQuickSelect(ArrayList<Integer> arr, int k, int left, int right) {
+		// if k is smaller than the number of elements in the array
+		System.out.println("quickselect @ " + left + " " + right);
+		if (k > 0 && right-left > k) {
+			int pivot = partition(arr, left, right);
+			System.out.println("pivot returned and value is " + pivot + " " + arr.get(pivot) + " @ " + left + " " + right);
+			if (pivot-left == k) {
+				return arr.get(pivot-1);
+			}
+			
+			if (pivot-left > k) {
+				return findViaQuickSelect(arr, k, left, pivot-1);
+			}
+			else {
+				return findViaQuickSelect(arr, k-pivot+left-1, pivot+1, right);
+			}
+		}
+		return Integer.MAX_VALUE;
+	}
+	
+	// 1. divide into arrays size of 5 except the last one maybe. FIVE!
+	// 2. sort above groups and create auxiliary array median[] and store medians of all of those GIVE arrays
+	// 3. // recursively call to find medians of medians? WTF?
+	// 4. medianOfMedians = KthSmallest(median[0...n/5-1], n/10) not sure if I understand this
+	// 5. partition .. WTF
+	// So what's the conclusion here? IMO it can be the followings:
+	// A. interviewer want to see if I can provide "the best one" right away. i.e) have you heard of it or not and can you implement it
+	//    In other words, unless I'm dealing with kth shit everyday it's sorta impossible IMO
+	// B. interviewer want to see how I'm progress and I have at least grasp of the existance of the algo
+	// C. Whatever, he just want to reject candidates by this.... or company policy.
 }
