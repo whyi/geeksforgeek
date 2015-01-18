@@ -78,15 +78,112 @@ public class Sorting1 {
 		assertEquals(expected, insertionSort(input));
 	}
 	
-	private static ArrayList<Integer> mergeSort(ArrayList<Integer> array) {
+	private static void merge(int[] array, int left, int mid, int right) {
+		System.out.println("merge " + left + " " + mid + " " + right);
+		ArrayList<Integer> leftList = new ArrayList<Integer>();
+		
+		for (int i = left; i < mid; ++i) {
+			leftList.add(array[i]);
+		}
+		
+		ArrayList<Integer> rightList = new ArrayList<Integer>();
+		
+		for (int i = mid; i < right; ++i) {
+			rightList.add(array[i]);
+		}
+		System.out.println("left : " + leftList);
+		System.out.println("right: " + rightList);
+		
+		int i = 0;
+		int j = 0;
+		int k = left;
+		while (i < leftList.size() && j < rightList.size()) {
+			if (leftList.get(i) < rightList.get(j)) {
+				array[k] = leftList.get(i);
+				++i;
+			}
+			else {
+				array[k] = rightList.get(j);
+				++j;
+			}
+			++k;
+		}
+		
+		// leftovers
+		while (i < leftList.size()) {
+			array[k] = leftList.get(i);
+			++i;
+			++k;
+		}
+		
+		while (j < rightList.size()) {
+			array[k] =  rightList.get(j);
+			++j;
+			++k;
+		}
+		System.out.print("merged : ");
+		for (int val:array)
+			System.out.print(val + " ");
+		System.out.println();
+	}
+	
+	 private static void merge11(int[] numbers, int low, int middle, int high) {
+		 int[] helper = new int[numbers.length];
+	    // Copy both parts into the helper array
+	    for (int i = low; i <= high; i++) {
+	      helper[i] = numbers[i];
+	    }
+
+	    int i = low;
+	    int j = middle + 1;
+	    int k = low;
+
+	    // Copy the smallest values from either the left or the right side back
+	    // to the original array
+	    while (i <= middle && j <= high) {
+	      if (helper[i] <= helper[j]) {
+	        numbers[k] = helper[i];
+	        i++;
+	      } else {
+	        numbers[k] = helper[j];
+	        j++;
+	      }
+	      k++;
+	    }
+	    // Copy the rest of the left side of the array into the target array
+	    while (i <= middle) {
+	      numbers[k] = helper[i];
+	      k++;
+	      i++;
+	    }
+		System.out.print("merged : ");
+		for (int val:numbers)
+			System.out.print(val + " ");
+		System.out.println();
+	  }
+
+	
+	private static void mergeSortImpl(int[] array, int left, int right) {
+		if (left < right) {
+			final int mid = left+(right-left)/2;
+			mergeSortImpl(array, left, mid);
+			mergeSortImpl(array, mid+1, right);
+			merge11(array, left, mid, right);
+		}
+	}
+	
+	private static ArrayList<Integer> mergeSort(int[] arr) {
+		mergeSortImpl(arr, 0, arr.length-1);
 		return null;
 	}
 	
 	@Test
 	public void mergeSort() {
-		ArrayList<Integer> input = new ArrayList<Integer>(Arrays.asList(new Integer[]{10,9,8,7,6,1,2,3,4,5}));
+		ArrayList<Integer> input = new ArrayList<Integer>(Arrays.asList(new Integer[]{10,9,8,7,6}));
 		ArrayList<Integer> expected = new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9,10}));
-		assertEquals(expected, mergeSort(input));
+		
+		int[] arr = {10,9,8,7,6};
+		assertEquals(expected, mergeSort(arr));
 	}
 	
 	private static ArrayList<Integer> quickSort(ArrayList<Integer> array) {
