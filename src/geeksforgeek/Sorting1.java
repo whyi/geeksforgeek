@@ -4,13 +4,23 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Test;
 
 public class Sorting1 {
 
 	private static ArrayList<Integer> selectionSort(ArrayList<Integer> array) {
-		return null;
+		for (int i = 0; i < array.size(); ++i) {
+			int minIndex = i;
+			for (int j = i+1; j < array.size(); ++j) {
+				if (array.get(minIndex) > array.get(j)) {
+					minIndex = j;
+				}
+			}
+			Collections.swap(array, i, minIndex);
+		}
+		return array;
 	}
 	
 	@Test
@@ -21,7 +31,20 @@ public class Sorting1 {
 	}
 
 	private static ArrayList<Integer> bubbleSort(ArrayList<Integer> array) {
-		return null;
+		final int n = array.size();
+		for (int i = 0; i < n; ++i) {
+			boolean swapped = false;
+			for (int j = 0; j < n-i-1; ++j) {
+				if (array.get(j) > array.get(j+1)) {
+					Collections.swap(array, j, j+1);
+					swapped = true;
+				}
+			}
+			if (!swapped) {
+				break;
+			}
+		}
+		return array;
 	}
 	
 	@Test
@@ -31,8 +54,21 @@ public class Sorting1 {
 		assertEquals(expected, bubbleSort(input));		
 	}
 
+	// FIXME : not so intuitive, try with plain array than the arraylist.
 	private static ArrayList<Integer> insertionSort(ArrayList<Integer> array) {
-		return null;
+		final int n = array.size();
+		
+		for (int i = 1; i < n; ++i) {
+			final Integer value = array.get(i);
+			
+			int j = i-1;
+			while (j >= 0 && array.get(j) > value) {
+				array.set(j+1, array.get(j));
+				--j;
+			}
+			array.set(j+1, value);
+		}
+		return array;
 	}
 	
 	@Test
