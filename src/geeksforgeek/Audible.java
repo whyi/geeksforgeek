@@ -267,4 +267,21 @@ public class Audible {
 	//    In other words, unless I'm dealing with kth shit everyday it's sorta impossible IMO
 	// B. interviewer want to see how I'm progress and I have at least grasp of the existance of the algo
 	// C. Whatever, he just want to reject candidates by this.... or company policy.
+	
+	private static int index = 0;
+	public static void arrayToBST(int[] arr, Node root) {
+	    // Base Case
+	    if (root == null)
+	      return;
+
+	    /* first update the left subtree */
+	    arrayToBST(arr, root.left);
+
+	    /* Now update root's data and increment index */
+	    root.data = arr[index];
+	    ++index;
+
+	    /* finally update the right subtree */
+	    arrayToBST(arr, root.right);
+	}
 }
